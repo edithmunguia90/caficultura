@@ -27,6 +27,7 @@ MDI_PATHS = {
     "cash": "M3,6H21V18H3V6M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M7,8A2,2 0 0,1 5,10V14A2,2 0 0,1 7,16H17A2,2 0 0,1 19,14V10A2,2 0 0,1 17,8H7Z",
     "cloud": "M19.35,10.04C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.04C2.34,8.36 0,10.91 0,14A6,6 0 0,0 6,20H19A5,5 0 0,0 24,15C24,12.36 21.95,10.22 19.35,10.04Z",
     "history": "M13,3A9,9 0 0,0 4,12H1L4.89,15.89L4.96,16.03L9,12H6A7,7 0 0,1 13,5A7,7 0 0,1 20,12A7,7 0 0,1 13,19C11.07,19 9.38,18.22 8.16,16.96L6.74,18.38C8.36,20 10.56,21 13,21A9,9 0 0,0 22,12A9,9 0 0,0 13,3M12,8V13L16.28,15.54L17,14.33L13.5,12.25V8H12Z",
+    "menu": "M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z",
     "rail_collapse": "M15.41,16.59L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.59Z",
     "rail_expand": "M8.59,16.59L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.59Z",
 }
@@ -101,6 +102,7 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
     icon_cash = _mdi_data_uri("cash")
     icon_cloud = _mdi_data_uri("cloud")
     icon_hist = _mdi_data_uri("history")
+    icon_menu = _mdi_data_uri("menu")
 
     # Reglas específicas según si el sidebar está en modo riel compacto o completo
     if sidebar_compacto:
@@ -113,9 +115,9 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         section[data-testid="stSidebar"][data-collapsed="false"],
         section[data-testid="stSidebar"][aria-expanded="false"],
         section[data-testid="stSidebar"][aria-expanded="true"] {
-            width: 72px !important;
-            min-width: 72px !important;
-            max-width: 72px !important;
+            width: 80px !important;
+            min-width: 80px !important;
+            max-width: 80px !important;
             transform: none !important;
             margin-left: 0 !important;
             left: 0 !important;
@@ -126,7 +128,7 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
             flex-shrink: 0 !important;
         }
         [data-testid="stSidebar"] .block-container {
-            padding: 0.85rem 0.35rem !important;
+            padding: 1rem 0.45rem !important;
         }
         .axiom-brand span,
         .sidebar-section-title,
@@ -145,14 +147,50 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         [data-testid="stSidebar"] [class*="st-key-nav_"] button,
         [data-testid="stSidebar"] [data-testid="stPopover"] > button {
             justify-content: center !important;
-            padding: 0.45rem !important;
+            padding: 0.55rem !important;
             width: 100% !important;
         }
         .axiom-brand {
             justify-content: center !important;
             padding-left: 0 !important;
             padding-right: 0 !important;
-            margin-bottom: 0.4rem !important;
+            margin-bottom: 0.35rem !important;
+        }
+        .st-key-sidebar_toggle_rail {
+            display: flex !important;
+            justify-content: center !important;
+            margin-bottom: 0.55rem !important;
+        }
+        .st-key-sidebar_toggle_rail button {
+            min-height: 44px !important;
+            width: 44px !important;
+            margin: 0 auto !important;
+            border-radius: 0.45rem !important;
+        }
+        .st-key-sidebar_toggle_rail button::before {
+            width: 26px !important;
+            height: 26px !important;
+        }
+        .st-key-sidebar_new_chat button {
+            min-height: 48px !important;
+        }
+        .st-key-sidebar_new_chat button::before {
+            width: 26px !important;
+            height: 26px !important;
+        }
+        [data-testid="stSidebar"] [class*="st-key-nav_"] button {
+            min-height: 48px !important;
+        }
+        [data-testid="stSidebar"] [class*="st-key-nav_"] button::before {
+            width: 28px !important;
+            height: 28px !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stPopover"] > button {
+            min-height: 48px !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stPopover"] > button::before {
+            width: 26px !important;
+            height: 26px !important;
         }
         """
     else:
@@ -165,9 +203,9 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         section[data-testid="stSidebar"][data-collapsed="false"],
         section[data-testid="stSidebar"][aria-expanded="false"],
         section[data-testid="stSidebar"][aria-expanded="true"] {
-            width: 240px !important;
-            min-width: 240px !important;
-            max-width: 240px !important;
+            width: 290px !important;
+            min-width: 290px !important;
+            max-width: 290px !important;
             transform: none !important;
             margin-left: 0 !important;
             left: 0 !important;
@@ -239,7 +277,7 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         display: none !important;
     }}
 
-    /* FORZAR VISIBILIDAD PERMANENTE DEL SIDEBAR: NUNCA PERMITIR QUE SE TRASLADE FUERA DE PANTALLA NI SE OCULTE */
+    /* Sidebar permanente */
     section.stSidebar,
     .stSidebar,
     section[data-testid="stSidebar"],
@@ -302,11 +340,11 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
     }}
 
     [data-testid="stSidebar"] .block-container {{
-        padding: 1rem 0.75rem !important;
+        padding: 1.25rem 1rem !important;
         max-width: 100% !important;
     }}
     [data-testid="stSidebar"] [data-testid="stVerticalBlock"] {{
-        gap: 0.25rem !important;
+        gap: 0.35rem !important;
     }}
 
     {compact_css}
@@ -314,10 +352,10 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
     .axiom-brand {{
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        font-size: 0.95rem;
-        font-weight: 600;
-        letter-spacing: -0.02em;
+        gap: 0.65rem;
+        font-size: 1.15rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
         color: var(--foreground);
     }}
 
@@ -326,27 +364,51 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0.15rem 0.4rem 0.65rem 0.4rem;
-        margin-bottom: 0.4rem;
+        padding: 0.2rem 0.4rem 0.75rem 0.4rem;
+        margin-bottom: 0.5rem;
         border-bottom: 1px solid var(--border);
     }}
 
-    /* Boton conmutador de riel en el sidebar */
+    /* Boton hamburguesa para alternar riel/menu lateral */
     .st-key-sidebar_toggle_rail button {{
         background-color: transparent !important;
         color: var(--muted-foreground) !important;
         border: 1px solid transparent !important;
         border-radius: 0.375rem !important;
-        min-height: 28px !important;
-        width: 28px !important;
+        min-height: 36px !important;
+        width: 36px !important;
         padding: 0 !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
+        transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease !important;
+        cursor: pointer !important;
+    }}
+    .st-key-sidebar_toggle_rail button::before {{
+        content: "";
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+        background-color: currentColor;
+        -webkit-mask-image: {icon_menu};
+        mask-image: {icon_menu};
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+    }}
+    .st-key-sidebar_toggle_rail button div,
+    .st-key-sidebar_toggle_rail button p,
+    .st-key-sidebar_toggle_rail button span {{
+        display: none !important;
     }}
     .st-key-sidebar_toggle_rail button:hover {{
         background-color: var(--muted) !important;
         color: var(--foreground) !important;
+        transform: scale(1.05) !important;
     }}
 
     /* Boton superior 'Nueva consulta' en sidebar */
@@ -354,22 +416,23 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         display: flex !important;
         align-items: center !important;
         justify-content: flex-start !important;
-        gap: 0.55rem !important;
+        gap: 0.75rem !important;
         background-color: var(--muted) !important;
         color: var(--foreground) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 0.375rem !important;
-        min-height: 38px !important;
-        font-size: 0.875rem !important;
-        font-weight: 500 !important;
-        margin-bottom: 0.4rem !important;
+        border-radius: 0.45rem !important;
+        min-height: 44px !important;
+        padding: 0.55rem 0.95rem !important;
+        font-size: 0.96rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 0.55rem !important;
         transition: all 0.15s var(--ease-out-expo) !important;
     }}
     .st-key-sidebar_new_chat button::before {{
         content: "";
         display: inline-block;
-        width: 15px;
-        height: 15px;
+        width: 24px;
+        height: 24px;
         flex-shrink: 0;
         background-color: currentColor;
         -webkit-mask-image: {icon_plus};
@@ -381,6 +444,9 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         background-color: var(--muted-active) !important;
         border-color: var(--border-strong) !important;
     }}
+    .st-key-sidebar_new_chat button * {{
+        color: var(--foreground) !important;
+    }}
 
     /* Modulos del Sidebar con iconos MDI alineados a la izquierda */
     [data-testid="stSidebar"] [class*="st-key-nav_"] button {{
@@ -388,14 +454,14 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         align-items: center !important;
         justify-content: flex-start !important;
         text-align: left !important;
-        gap: 0.65rem !important;
+        gap: 0.95rem !important;
         background-color: transparent !important;
         color: var(--muted-foreground) !important;
         border: 1px solid transparent !important;
-        border-radius: 0.375rem !important;
-        min-height: 36px !important;
-        padding: 0.35rem 0.65rem !important;
-        font-size: 0.875rem !important;
+        border-radius: 0.45rem !important;
+        min-height: 44px !important;
+        padding: 0.55rem 0.95rem !important;
+        font-size: 0.98rem !important;
         font-weight: 500 !important;
         box-shadow: none !important;
         cursor: pointer !important;
@@ -424,8 +490,8 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
     [data-testid="stSidebar"] [class*="st-key-nav_"] button::before {{
         content: "";
         display: inline-block;
-        width: 17px;
-        height: 17px;
+        width: 26px;
+        height: 26px;
         flex-shrink: 0;
         background-color: currentColor;
         -webkit-mask-size: contain;
@@ -444,12 +510,12 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
 
     /* Seccion RECENTS en Sidebar */
     .sidebar-section-title {{
-        font-size: 0.72rem;
+        font-size: 0.78rem;
         font-weight: 600;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.06em;
         text-transform: uppercase;
         color: var(--muted-foreground);
-        padding: 0.85rem 0.6rem 0.25rem 0.6rem;
+        padding: 1.1rem 0.65rem 0.35rem 0.65rem;
         margin: 0;
     }}
     [class*="st-key-recent_"] button {{
@@ -457,14 +523,14 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         align-items: center !important;
         justify-content: flex-start !important;
         text-align: left !important;
-        gap: 0.55rem !important;
+        gap: 0.65rem !important;
         background-color: transparent !important;
         color: var(--muted-foreground) !important;
         border: 1px solid transparent !important;
         border-radius: 0.375rem !important;
-        min-height: 30px !important;
-        padding: 0.2rem 0.55rem !important;
-        font-size: 0.8rem !important;
+        min-height: 34px !important;
+        padding: 0.3rem 0.65rem !important;
+        font-size: 0.86rem !important;
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
@@ -473,8 +539,8 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
     [class*="st-key-recent_"] button::before {{
         content: "";
         display: inline-block;
-        width: 14px;
-        height: 14px;
+        width: 17px;
+        height: 17px;
         flex-shrink: 0;
         background-color: currentColor;
         -webkit-mask-image: {icon_hist};
@@ -492,22 +558,23 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         display: flex !important;
         align-items: center !important;
         justify-content: flex-start !important;
-        gap: 0.5rem !important;
+        gap: 0.65rem !important;
         background-color: var(--card) !important;
         border: 1px solid var(--border) !important;
-        min-height: 38px !important;
-        padding: 0.4rem 0.65rem !important;
-        font-size: 0.82rem !important;
+        min-height: 42px !important;
+        padding: 0.5rem 0.85rem !important;
+        font-size: 0.88rem !important;
+        font-weight: 500 !important;
         color: var(--foreground) !important;
         box-shadow: none !important;
-        border-radius: 0.375rem !important;
-        margin-top: 0.5rem !important;
+        border-radius: 0.45rem !important;
+        margin-top: 0.65rem !important;
     }}
     [data-testid="stSidebar"] [data-testid="stPopover"] > button::before {{
         content: "";
         display: inline-block;
-        width: 15px;
-        height: 15px;
+        width: 19px;
+        height: 19px;
         flex-shrink: 0;
         background-color: currentColor;
         -webkit-mask-image: {icon_adj};
@@ -519,13 +586,16 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         background-color: var(--muted) !important;
         border-color: var(--border-strong) !important;
     }}
+    [data-testid="stSidebar"] [data-testid="stPopover"] > button * {{
+        color: var(--foreground) !important;
+    }}
 
     /* Cabecera superior minimalista */
     .axiom-topbar {{
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        font-size: 0.95rem;
+        gap: 0.65rem;
+        font-size: 1.05rem;
         font-weight: 600;
         color: var(--foreground);
     }}
@@ -539,7 +609,7 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         font-family: var(--font-mono);
     }}
 
-    /* ESTADO INICIAL HERO CENTRADO */
+    /* Estado inicial hero */
     .axiom-hero-wrap {{
         max-width: 680px;
         margin: 2.25rem auto 1.25rem auto;
@@ -584,7 +654,7 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         text-align: left;
     }}
 
-    /* CUADRICULA 2X2 DE TARJETAS QUICK START (TITULO Y SUBTITULO CLARAMENTE SEPARADOS) */
+    /* Tarjetas de inicio rapido */
     .quick-start-grid {{
         max-width: 680px;
         margin: 0 auto;
@@ -609,6 +679,8 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
     [class*="st-key-qs_"] button p {{
         margin: 0 !important;
         line-height: 1.35 !important;
+        color: var(--muted-foreground) !important;
+        font-weight: 400 !important;
     }}
     [class*="st-key-qs_"] button strong {{
         font-size: 0.88rem !important;
@@ -642,7 +714,7 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         transform: scale(0.985) !important;
     }}
 
-    /* CHAT LADO A LADO: Izquierda Usuario, Derecha Bot */
+    /* Mensajes alineados por rol */
     .chat-flow-container {{
         max-width: 860px;
         margin: 0 auto;
@@ -687,7 +759,7 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         text-align: right;
     }}
 
-    /* CORRECCION DEFINITIVA DE FOCO EN LA BARRA DE CHAT (EVITA EL RECUADRO INTERNO) */
+    /* Foco en chat input */
     [data-testid="stChatInput"] {{
         border: 1px solid var(--border) !important;
         border-radius: var(--radius) !important;
@@ -798,6 +870,126 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         color: var(--muted-foreground) !important;
     }}
 
+    /* Botones primarios (alto contraste WCAG AAA para Continuar en el chat y acciones clave) */
+    .stButton > button[kind="primary"],
+    .stButton > button[data-testid*="primary"],
+    .stMain button[kind="primary"],
+    .stMain [data-testid="baseButton-primary"],
+    [data-testid="stMain"] button[kind="primary"],
+    [data-testid="stMain"] [data-testid="baseButton-primary"],
+    section.main button[kind="primary"],
+    section.main [data-testid="baseButton-primary"] {{
+        background-color: var(--primary) !important;
+        color: var(--primary-foreground) !important;
+        border: 1px solid var(--primary) !important;
+        border-radius: var(--radius) !important;
+        min-height: 42px !important;
+        font-weight: 600 !important;
+        font-size: 0.92rem !important;
+        letter-spacing: -0.01em !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) !important;
+        transition: all 0.16s var(--ease-out-expo) !important;
+        cursor: pointer !important;
+    }}
+    .stButton > button[kind="primary"] *,
+    .stButton > button[data-testid*="primary"] *,
+    .stMain button[kind="primary"] *,
+    .stMain [data-testid="baseButton-primary"] *,
+    [data-testid="stMain"] button[kind="primary"] *,
+    [data-testid="stMain"] [data-testid="baseButton-primary"] *,
+    section.main button[kind="primary"] *,
+    section.main [data-testid="baseButton-primary"] * {{
+        color: var(--primary-foreground) !important;
+        font-weight: 600 !important;
+    }}
+    .stButton > button[kind="primary"]:hover,
+    .stButton > button[data-testid*="primary"]:hover,
+    .stMain button[kind="primary"]:hover,
+    .stMain [data-testid="baseButton-primary"]:hover,
+    [data-testid="stMain"] button[kind="primary"]:hover,
+    [data-testid="stMain"] [data-testid="baseButton-primary"]:hover,
+    section.main button[kind="primary"]:hover,
+    section.main [data-testid="baseButton-primary"]:hover {{
+        background-color: var(--primary-hover) !important;
+        border-color: var(--primary-hover) !important;
+        color: var(--primary-foreground) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+    }}
+    .stButton > button[kind="primary"]:hover *,
+    .stButton > button[data-testid*="primary"]:hover *,
+    .stMain button[kind="primary"]:hover *,
+    .stMain [data-testid="baseButton-primary"]:hover *,
+    [data-testid="stMain"] button[kind="primary"]:hover *,
+    [data-testid="stMain"] [data-testid="baseButton-primary"]:hover *,
+    section.main button[kind="primary"]:hover *,
+    section.main [data-testid="baseButton-primary"]:hover * {{
+        color: var(--primary-foreground) !important;
+    }}
+    .stButton > button[kind="primary"]:active,
+    .stButton > button[data-testid*="primary"]:active,
+    .stMain button[kind="primary"]:active,
+    .stMain [data-testid="baseButton-primary"]:active,
+    [data-testid="stMain"] button[kind="primary"]:active,
+    [data-testid="stMain"] [data-testid="baseButton-primary"]:active {{
+        transform: translateY(0) scale(0.99) !important;
+    }}
+
+    /* Botones secundarios y de descarga en area principal */
+    .stMain button[kind="secondary"],
+    .stMain [data-testid="baseButton-secondary"],
+    [data-testid="stMain"] button[kind="secondary"],
+    [data-testid="stMain"] [data-testid="baseButton-secondary"],
+    section.main button[kind="secondary"],
+    section.main [data-testid="baseButton-secondary"],
+    .stMain .stDownloadButton > button,
+    [data-testid="stMain"] .stDownloadButton > button {{
+        background-color: var(--card) !important;
+        color: var(--foreground) !important;
+        border: 1px solid var(--border-strong) !important;
+        border-radius: var(--radius) !important;
+        min-height: 40px !important;
+        font-weight: 500 !important;
+        font-size: 0.9rem !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) !important;
+        transition: all 0.16s var(--ease-out-expo) !important;
+        cursor: pointer !important;
+    }}
+    .stMain button[kind="secondary"] *,
+    .stMain [data-testid="baseButton-secondary"] *,
+    [data-testid="stMain"] button[kind="secondary"] *,
+    [data-testid="stMain"] [data-testid="baseButton-secondary"] *,
+    section.main button[kind="secondary"] *,
+    section.main [data-testid="baseButton-secondary"] *,
+    .stMain .stDownloadButton > button *,
+    [data-testid="stMain"] .stDownloadButton > button * {{
+        color: var(--foreground) !important;
+        font-weight: 500 !important;
+    }}
+    .stMain button[kind="secondary"]:hover,
+    .stMain [data-testid="baseButton-secondary"]:hover,
+    [data-testid="stMain"] button[kind="secondary"]:hover,
+    [data-testid="stMain"] [data-testid="baseButton-secondary"]:hover,
+    section.main button[kind="secondary"]:hover,
+    section.main [data-testid="baseButton-secondary"]:hover,
+    .stMain .stDownloadButton > button:hover,
+    [data-testid="stMain"] .stDownloadButton > button:hover {{
+        background-color: var(--muted-active) !important;
+        border-color: var(--foreground) !important;
+        color: var(--foreground) !important;
+        transform: translateY(-1px) !important;
+    }}
+    .stMain button[kind="secondary"]:hover *,
+    .stMain [data-testid="baseButton-secondary"]:hover *,
+    [data-testid="stMain"] button[kind="secondary"]:hover *,
+    [data-testid="stMain"] [data-testid="baseButton-secondary"]:hover *,
+    section.main button[kind="secondary"]:hover *,
+    section.main [data-testid="baseButton-secondary"]:hover *,
+    .stMain .stDownloadButton > button:hover *,
+    [data-testid="stMain"] .stDownloadButton > button:hover * {{
+        color: var(--foreground) !important;
+    }}
+
     button:focus-visible,
     select:focus-visible,
     [role="button"]:focus-visible {{
@@ -838,7 +1030,7 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
 
 def render_brand_top_row(sidebar_compacto: bool = False):
     """Renderiza la marca en el tope del sidebar con icono MDI."""
-    icon = mdi_svg_inline("brand", size=18)
+    icon = mdi_svg_inline("brand", size=26 if not sidebar_compacto else 30)
     label_html = "<span>Caficultura</span>" if not sidebar_compacto else ""
     st.markdown(
         f'<div class="axiom-brand">{icon}{label_html}</div>',
@@ -848,7 +1040,7 @@ def render_brand_top_row(sidebar_compacto: bool = False):
 
 def render_topbar(titulo: str, tag_contexto: str = ""):
     """Renderiza el titulo de la vista superior con icono MDI."""
-    icon = mdi_svg_inline(titulo, size=18)
+    icon = mdi_svg_inline(titulo, size=24)
     st.markdown(
         f'<div class="axiom-topbar">{icon}<span>{titulo}</span></div>',
         unsafe_allow_html=True,
