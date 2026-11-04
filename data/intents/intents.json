@@ -1,0 +1,137 @@
+{
+  "version": "1.0.0",
+  "domain": "caficultura_nicaragua",
+  "intents": [
+    {
+      "intent": "Consultar_Diagnostico_Sintoma",
+      "description": "Consulta sobre plagas, enfermedades foliares o síntomas visibles en el cafeto.",
+      "examples": [
+        "Tengo manchas naranjas en hojas",
+        "Veo un polvo amarillo en el envés de la hoja",
+        "Hay pústulas anaranjadas en el cafeto",
+        "Tengo manchas negras y ramas secas",
+        "Mis hojas tienen manchas circulares con borde café",
+        "Las hojas se ven amarillas con clorosis uniforme",
+        "Encontré granos perforados en la plantación",
+        "Tengo telaraña blanca en las ramas",
+        "Las raíces se ven negras y descompuestas"
+      ]
+    },
+    {
+      "intent": "Confirmar_Accion",
+      "description": "Confirmación afirmativa del usuario para proceder con un flujo o plan.",
+      "examples": [
+        "confirmo",
+        "confirmar",
+        "si",
+        "sí",
+        "de acuerdo",
+        "adelante",
+        "acepto",
+        "proceda",
+        "ok"
+      ]
+    },
+    {
+      "intent": "Cancelar_Operacion",
+      "description": "Cancelación o aborto de la operación o flujo en curso.",
+      "examples": [
+        "cancelar",
+        "cancela",
+        "olvídalo",
+        "detente",
+        "para"
+      ]
+    },
+    {
+      "intent": "Optimizar_Plan_Fertilizacion_Riego",
+      "description": "Solicitud de cálculo de optimización bioeconómica de insumos de fertilización y riego.",
+      "examples": [
+        "Optimizar fertilizacion para 2 manzanas",
+        "Quiero optimizar el plan de riego y nutrientes",
+        "Calcular dosis de fertilización para 1 manzana",
+        "Dosis óptima de urea y potasio para mi parcela",
+        "Plan de nutrición para 3 hectáreas de café"
+      ]
+    },
+    {
+      "intent": "Generar_Reporte_PDF",
+      "description": "Generación y exportación del informe técnico fitosanitario y bioeconómico en PDF.",
+      "examples": [
+        "Generar reporte PDF",
+        "Dame el reporte técnico en pdf",
+        "Descargar documento de la sesión",
+        "Exportar reporte agronómico"
+      ]
+    },
+    {
+      "intent": "Sincronizar_Clima_Entorno",
+      "description": "Consulta meteorológica actual para el departamento activo.",
+      "examples": [
+        "¿Cómo está el clima hoy?",
+        "Consultar tiempo en Matagalpa",
+        "¿Va a llover en mi zona?",
+        "Temperatura y humedad actual"
+      ]
+    },
+    {
+      "intent": "Consultar_Precios_Mercado",
+      "description": "Consulta de indicadores económicos (precio internacional de café en quintal y tipo de cambio NIO/USD).",
+      "examples": [
+        "¿Cuál es el precio del café hoy?",
+        "Cotización de la urea y fertilizantes",
+        "Tipo de cambio del córdoba respecto al dólar",
+        "Precios actuales de mercado"
+      ]
+    },
+    {
+      "intent": "Solicitar_Ayuda",
+      "description": "Petición de orientación o lista de capacidades del asistente.",
+      "examples": [
+        "ayuda",
+        "¿Qué puedes hacer?",
+        "¿Cuáles son tus funciones?",
+        "¿Cómo funciona este asistente?"
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "entity": "sintoma_observado",
+      "values": [
+        "manchas_naranjas",
+        "polvo_amarillo",
+        "pustulas",
+        "manchas_negras",
+        "lesiones_hundidas",
+        "muerte_ramas",
+        "manchas_circulares",
+        "borde_cafe",
+        "centro_gris",
+        "hojas_amarillas",
+        "clorosis_uniforme",
+        "granos_perforados",
+        "broca_visible",
+        "telarana_blanca",
+        "raiz_negra"
+      ]
+    },
+    {
+      "entity": "tipo_insumo",
+      "values": ["fertilizante", "fungicida", "biologico", "agua"]
+    },
+    {
+      "entity": "fase_fenologica",
+      "values": ["floracion", "llenado_grano", "madurez", "crecimiento", "vegetativo"]
+    },
+    {
+      "entity": "departamento_zona",
+      "values": [
+        "Boaco", "Carazo", "Chinandega", "Chontales", "Esteli", "Granada",
+        "Jinotega", "Leon", "Madriz", "Managua", "Masaya", "Matagalpa",
+        "Nueva Segovia", "Rio San Juan", "Rivas", "RACCN", "RACCS"
+      ]
+    }
+  ]
+}
+
