@@ -48,16 +48,14 @@ class ClasificadorVisionCNN:
 
         r, a, d, o, h = pct(m_roya), pct(m_antra), pct(m_defn), pct(m_ojo), pct(m_hierro)
         
-        # ARREGLO: Roya tiene prioridad sobre Mancha de Hierro
         if a > 0.02: return "Antracnosis", min(0.92, 0.60 + (a * 5))
         elif o > 0.015: return "Ojo_de_gallo", min(0.88, 0.60 + (o * 5))
-        elif r > 0.008: return "Roya", min(0.95, 0.65 + (r * 8)) # Roya antes que Hierro
+        elif r > 0.008: return "Roya", min(0.95, 0.65 + (r * 8))
         elif h > 0.015: return "Mancha_de_hierro", min(0.90, 0.60 + (h * 5))
         elif d > 0.10: return "Deficiencia_Nitrogeno", min(0.90, 0.50 + (d * 2))
         else: return "Sana", 0.85
 
     def clasificar_imagen(self, ruta, sintoma_textual=None):
-        # 1. Intentar con Inteligencia Artificial
         resultado_ia = self.llm.analizar_imagen_con_ia(ruta)
         
         if resultado_ia and "error" not in resultado_ia:
@@ -66,17 +64,14 @@ class ClasificadorVisionCNN:
             justificacion = resultado_ia.get("justificacion", "")
             modo = resultado_ia["modo"]
         else:
-            # 2. Fallback local
             img_rgb = self._preprocesar(ruta)
             clase, conf = self._analizar_hsv(img_rgb)
             modo = "heuristico_hsv"
-            # Si hubo un error con Gemini, lo mostramos para que sepas qué pasa
             if resultado_ia and "error" in resultado_ia:
-                justificacion = f"Error IA (usando HSV): {resultado_ia['error']}"
+                justificacion = f"Modo contingencia HSV ({resultado_ia['error']})"
             else:
-                justificacion = "Análisis por color (Fallback local)."
+                justificacion = "Analisis por color (Modo local HSV)."
 
-        # --- CRUCE CON SINTOMA TEXTUAL ---
         nota_cruce = None
         if sintoma_textual:
             clase_esperada = SINTOMA_A_CLASE.get(sintoma_textual)

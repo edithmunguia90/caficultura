@@ -1,0 +1,36 @@
+{
+  "architecture": "MobileNetV3Small-TransferLearning",
+  "base_model": "MobileNetV3Small (ImageNet pre-trained)",
+  "input_shape": [
+    224,
+    224,
+    3
+  ],
+  "num_classes": 6,
+  "classes": [
+    "Sana",
+    "Roya",
+    "Antracnosis",
+    "Deficiencia_Nitrogeno",
+    "Ojo_de_gallo",
+    "Mancha_de_hierro"
+  ],
+  "class_to_idx": {
+    "Sana": 0,
+    "Roya": 1,
+    "Antracnosis": 2,
+    "Deficiencia_Nitrogeno": 3,
+    "Ojo_de_gallo": 4,
+    "Mancha_de_hierro": 5
+  },
+  "training_details": {
+    "epochs": 25,
+    "batch_size": 16,
+    "optimizer": "Adam(lr=0.001)",
+    "loss": "categorical_crossentropy",
+    "val_accuracy": 0.942,
+    "val_loss": 0.183,
+    "dataset": "Coffee Leaf Disease Dataset (Nicaraguan Agroclimatic Collection)"
+  },
+  "description": "Pesos y arquitectura entrenados para clasificacion presuntiva de patologias foliares en cafe."
+}

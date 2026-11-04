@@ -5,8 +5,11 @@
 import os
 import json
 import time
+from pathlib import Path
 from dotenv import load_dotenv
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 load_dotenv()
 
 PROMPTS_PERFIL = {
@@ -48,10 +51,20 @@ class OraculoAgronomoLLM:
         else:
             self.error_gemini = "No se encontró GEMINI_API_KEY en el archivo .env"
 
+        self.ollama_client = None
         self._ollama_ok = self._probar_ollama()
         
-        # LISTA DE MODELOS EN ORDEN DE PREFERENCIA (El 3.8 es el más nuevo, el 2.5 y 2.0 son estables)
-        self.modelos_gemini = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-3.8-flash"]
+        # Lista de modelos en orden de preferencia (modelos con alta disponibilidad primero)
+        self.modelos_gemini = [
+            "gemini-3.1-flash-lite-preview",
+            "gemini-3.1-flash-lite",
+            "gemini-3.5-flash-lite",
+            "gemini-3.5-flash",
+            "gemini-flash-latest",
+            "gemini-3-flash-preview",
+            "gemini-3.7-flash",
+            "gemini-3.8-flash",
+        ]
 
     def set_perfil(self, perfil): self.perfil = perfil
 
@@ -61,7 +74,13 @@ class OraculoAgronomoLLM:
     def _probar_ollama(self):
         try:
             import ollama
-            ollama.list()
+            host = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434")
+            if host in ("0.0.0.0", "0.0.0.0:11434") or host.startswith("http://0.0.0.0"):
+                host = "http://127.0.0.1:11434"
+            elif not host.startswith("http://") and not host.startswith("https://"):
+                host = f"http://{host}"
+            self.ollama_client = ollama.Client(host=host)
+            self.ollama_client.list()
             return True
         except Exception:
             return False
@@ -119,12 +138,11 @@ class OraculoAgronomoLLM:
 
         if self._ollama_ok:
             try:
-                import ollama
                 mensajes = [{"role": "system", "content": system_prompt}]
                 for msg in historial[-6:]:
                     mensajes.append({"role": msg["role"], "content": msg["content"]})
                 mensajes.append({"role": "user", "content": contexto_completo})
-                r = ollama.chat(model=self.modelo_ollama, messages=mensajes, options={"temperature": 0.4})
+                r = self.ollama_client.chat(model=self.modelo_ollama, messages=mensajes, options={"temperature": 0.4})
                 return r["message"]["content"]
             except Exception as e:
                 return f"Error de Ollama: {e}"
