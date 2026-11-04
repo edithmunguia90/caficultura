@@ -6,6 +6,7 @@
 import json
 import os
 import re
+from pathlib import Path
 
 
 class MotorReglas:
@@ -13,7 +14,18 @@ class MotorReglas:
 
     def __init__(self, ruta=None):
         if ruta is None:
-            ruta = os.path.join("datos", "reglas_produccion.json")
+            # Buscar relativo o desde la raiz del modulo
+            candidatos = [
+                os.path.join("datos", "reglas_produccion.json"),
+                os.path.join(os.path.dirname(__file__), "..", "datos", "reglas_produccion.json"),
+            ]
+            for c in candidatos:
+                if os.path.exists(c):
+                    ruta = os.path.abspath(c)
+                    break
+            if ruta is None:
+                from config import RUTA_REGLAS
+                ruta = str(RUTA_REGLAS)
         self.ruta = ruta
         with open(ruta, "r", encoding="utf-8") as f:
             self.data = json.load(f)

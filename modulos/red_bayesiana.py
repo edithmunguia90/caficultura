@@ -4,6 +4,8 @@
 # Referencia: IA.docx Pag. 27-29 (CPTs) y Pag. 38 (implementacion)
 # Incluye los 6 nodos del documento + R_Ojo
 # ============================================================
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning, module="pgmpy")
 
 try:
     from pgmpy.models import DiscreteBayesianNetwork
@@ -97,8 +99,7 @@ class RedBayesianaCafe:
             evidence=["R_Roya", "P"], evidence_card=[3, 3],
         )
 
-        # R_Ojo | P, HR  (2 x 9)  -- NUEVO
-        # Favorecido por precipitacion y humedad alta
+        # R_Ojo | P, HR  (2 x 9)
         cpd_R_Ojo = TabularCPD(
             variable="R_Ojo", variable_card=2,
             values=[
