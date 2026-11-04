@@ -1,8 +1,4 @@
-# ============================================================
-# modulos/kpis.py
-# KPIs conversacionales + CSAT
-# Referencia: IA_Entregable1.pdf §10.2
-# ============================================================
+"""Registro y computo de KPIs conversacionales y satisfaccion CSAT."""
 import json
 import os
 from pathlib import Path

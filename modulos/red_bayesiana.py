@@ -1,9 +1,4 @@
-# ============================================================
-# modulos/red_bayesiana.py
-# Red Bayesiana del cafe usando pgmpy
-# Referencia: IA.docx Pag. 27-29 (CPTs) y Pag. 38 (implementacion)
-# Incluye los 6 nodos del documento + R_Ojo
-# ============================================================
+"""Red Bayesiana con inferencia exacta para evaluacion de riesgo fitopatologico."""
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning, module="pgmpy")
 
@@ -40,9 +35,7 @@ class RedBayesianaCafe:
         assert self.modelo.check_model(), "Red Bayesiana con inconsistencias"
         self.inferencia = VariableElimination(self.modelo)
 
-    # --------------------------------------------------------
     def _construir_cpts(self):
-        # Nodos raiz
         cpd_T = TabularCPD(
             variable="T", variable_card=3,
             values=[[0.20], [0.60], [0.20]],
@@ -56,39 +49,28 @@ class RedBayesianaCafe:
             values=[[0.40], [0.40], [0.20]],
         )
 
-        # S | T, HR  (2 x 9)
-        # Columnas en orden lexicografico: (T0,HR0), (T0,HR1), (T0,HR2),
-        #                                  (T1,HR0), (T1,HR1), (T1,HR2),
-        #                                  (T2,HR0), (T2,HR1), (T2,HR2)
         cpd_S = TabularCPD(
             variable="S", variable_card=2,
             values=[
-                # P(S = Corta)
                 [0.95, 0.85, 0.40,   0.85, 0.45, 0.10,   0.95, 0.70, 0.30],
-                # P(S = Prolongada)
                 [0.05, 0.15, 0.60,   0.15, 0.55, 0.90,   0.05, 0.30, 0.70],
             ],
             evidence=["T", "HR"], evidence_card=[3, 3],
         )
 
-        # R_Roya | S, P, T  (3 x 18)
         cpd_R_Roya = TabularCPD(
             variable="R_Roya", variable_card=3,
             values=[
-                # P(Bajo)
                 [0.85, 0.85, 0.85,  0.40, 0.40, 0.40,  0.15, 0.15, 0.15,
                  0.05, 0.05, 0.05,  0.15, 0.15, 0.15,  0.05, 0.05, 0.05],
-                # P(Medio)
                 [0.10, 0.10, 0.10,  0.45, 0.45, 0.45,  0.50, 0.50, 0.50,
                  0.15, 0.15, 0.15,  0.50, 0.50, 0.50,  0.15, 0.15, 0.15],
-                # P(Alto)
                 [0.05, 0.05, 0.05,  0.15, 0.15, 0.15,  0.35, 0.35, 0.35,
                  0.80, 0.80, 0.80,  0.35, 0.35, 0.35,  0.80, 0.80, 0.80],
             ],
             evidence=["S", "P", "T"], evidence_card=[2, 3, 3],
         )
 
-        # S_Antra | R_Roya, P  (3 x 9)
         cpd_S_Antra = TabularCPD(
             variable="S_Antra", variable_card=3,
             values=[
@@ -99,13 +81,10 @@ class RedBayesianaCafe:
             evidence=["R_Roya", "P"], evidence_card=[3, 3],
         )
 
-        # R_Ojo | P, HR  (2 x 9)
         cpd_R_Ojo = TabularCPD(
             variable="R_Ojo", variable_card=2,
             values=[
-                # P(R_Ojo = Bajo)
                 [0.95, 0.90, 0.70,   0.85, 0.75, 0.45,   0.70, 0.50, 0.15],
-                # P(R_Ojo = Alto)
                 [0.05, 0.10, 0.30,   0.15, 0.25, 0.55,   0.30, 0.50, 0.85],
             ],
             evidence=["P", "HR"], evidence_card=[3, 3],
@@ -116,7 +95,6 @@ class RedBayesianaCafe:
             cpd_R_Roya, cpd_S_Antra, cpd_R_Ojo,
         )
 
-    # --------------------------------------------------------
     @staticmethod
     def _discretizar(ev):
         out = {}
@@ -131,7 +109,6 @@ class RedBayesianaCafe:
             out["P"] = 0 if p < 50 else (1 if p <= 120 else 2)
         return out
 
-    # --------------------------------------------------------
     def evaluar(self, lluvia, hr, temp, sintoma="", precipitacion_24h=None):
         if precipitacion_24h is None:
             precipitacion_24h = 120.0 if lluvia else 20.0
@@ -197,7 +174,6 @@ class RedBayesianaCafe:
         }
 
 
-# ------------------------------------------------------------
 if __name__ == "__main__":
     red = RedBayesianaCafe()
     escenarios = [
@@ -208,9 +184,8 @@ if __name__ == "__main__":
     for nombre, lluvia, hr, temp, precip in escenarios:
         r = red.evaluar(lluvia=lluvia, hr=hr, temp=temp,
                         sintoma="manchas naranjas", precipitacion_24h=precip)
-        print(f"=== {nombre} ===")
+        print(f"Escenario: {nombre}")
         print(f"  Roya alto:       {r['detalle_roya']['alto']:.2f}")
         print(f"  Roya bajo:       {r['detalle_roya']['bajo']:.2f}")
         print(f"  Antracnosis sev: {r['detalle_antracnosis']['severa']:.2f}")
         print(f"  Ojo de gallo:    {r['detalle_ojo']['alto']:.2f}")
-        print()

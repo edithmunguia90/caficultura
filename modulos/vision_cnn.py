@@ -1,6 +1,4 @@
-# ============================================================
-# modulos/vision_cnn.py
-# ============================================================
+"""Clasificador de patologias foliares mediante Vision AI y fallback HSV."""
 import os
 import numpy as np
 
@@ -23,6 +21,7 @@ SINTOMA_A_CLASE = {
     "hojas_amarillas": "Deficiencia_Nitrogeno", "clorosis_uniforme": "Deficiencia_Nitrogeno",
 }
 
+
 class ClasificadorVisionCNN:
     def __init__(self, ruta_modelo=None):
         self.modo = "heuristico_hsv"
@@ -30,7 +29,8 @@ class ClasificadorVisionCNN:
 
     def _preprocesar(self, ruta):
         img = cv2.imread(ruta)
-        if img is None: raise FileNotFoundError(f"No se pudo leer: {ruta}")
+        if img is None:
+            raise FileNotFoundError(f"No se pudo leer: {ruta}")
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         return cv2.resize(img, (400, 400))
 
@@ -44,16 +44,23 @@ class ClasificadorVisionCNN:
         m_ojo = cv2.inRange(hsv, (0, 0, 150), (180, 40, 255))
         m_hierro = cv2.inRange(hsv, (10, 100, 100), (20, 255, 200))
 
-        def pct(mask): return np.count_nonzero(mask) / total_area
+        def pct(mask):
+            return np.count_nonzero(mask) / total_area
 
         r, a, d, o, h = pct(m_roya), pct(m_antra), pct(m_defn), pct(m_ojo), pct(m_hierro)
         
-        if a > 0.02: return "Antracnosis", min(0.92, 0.60 + (a * 5))
-        elif o > 0.015: return "Ojo_de_gallo", min(0.88, 0.60 + (o * 5))
-        elif r > 0.008: return "Roya", min(0.95, 0.65 + (r * 8))
-        elif h > 0.015: return "Mancha_de_hierro", min(0.90, 0.60 + (h * 5))
-        elif d > 0.10: return "Deficiencia_Nitrogeno", min(0.90, 0.50 + (d * 2))
-        else: return "Sana", 0.85
+        if a > 0.02:
+            return "Antracnosis", min(0.92, 0.60 + (a * 5))
+        elif o > 0.015:
+            return "Ojo_de_gallo", min(0.88, 0.60 + (o * 5))
+        elif r > 0.008:
+            return "Roya", min(0.95, 0.65 + (r * 8))
+        elif h > 0.015:
+            return "Mancha_de_hierro", min(0.90, 0.60 + (h * 5))
+        elif d > 0.10:
+            return "Deficiencia_Nitrogeno", min(0.90, 0.50 + (d * 2))
+        else:
+            return "Sana", 0.85
 
     def clasificar_imagen(self, ruta, sintoma_textual=None):
         resultado_ia = self.llm.analizar_imagen_con_ia(ruta)
@@ -76,7 +83,7 @@ class ClasificadorVisionCNN:
         if sintoma_textual:
             clase_esperada = SINTOMA_A_CLASE.get(sintoma_textual)
             if clase_esperada and clase != clase_esperada:
-                nota_cruce = f"Ajustado a '{clase_esperada}' basado en síntomas descritos."
+                nota_cruce = f"Ajustado a '{clase_esperada}' basado en sintomas descritos."
                 clase = clase_esperada
                 conf = max(conf, 0.85)
 

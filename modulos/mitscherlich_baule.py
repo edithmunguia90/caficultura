@@ -1,9 +1,4 @@
-# ============================================================
-# modulos/mitscherlich_baule.py
-# Modelo fisiologico-bioeconomico de Mitscherlich-Baule
-# Referencia: IA.docx Pag. 30-31
-# Formula: Y(x) = A * PROD(1 - exp(-c_i * (x_i + d_i)))
-# ============================================================
+"""Modelo bioeconomico de Mitscherlich-Baule para rendimiento de cafeto."""
 import numpy as np
 
 
@@ -11,8 +6,7 @@ class MitscherlichBaule:
     """
     Modela la respuesta del cafeto a la aplicacion de nutrientes y agua.
 
-    Parametros
-    ----------
+    Parametros:
     A  : rendimiento maximo asintotico (qq oro / manzana)
     c  : coeficientes de eficiencia fisiologica por factor
     d  : disponibilidad basal del factor en el suelo (constante)
@@ -34,37 +28,24 @@ class MitscherlichBaule:
         self.c = tuple(c)
         self.d = tuple(d)
 
-    # --------------------------------------------------------
     def rendimiento(self, agua, N, P, K):
-        """
-        Retorna el rendimiento esperado en quintales de cafe oro
-        por manzana, dadas las dosis de cada factor.
-        """
+        """Retorna el rendimiento esperado en quintales de cafe oro por manzana."""
         x = (agua, N, P, K)
         y = self.A
         for i in range(4):
             y *= (1.0 - np.exp(-self.c[i] * (x[i] + self.d[i])))
         return float(y)
 
-    # --------------------------------------------------------
     def fraccion_suficiencia(self, factor_idx, dosis):
-        """
-        Progresion de suficiencia w_n = 1 - (0.5)^n
-        (equivalente a 1 - exp(-c*(x+d)) con la curva ajustada).
-        Util para reportes.
-        """
+        """Calcula la fraccion de suficiencia 1 - exp(-c*(x+d))."""
         c_i = self.c[factor_idx]
         d_i = self.d[factor_idx]
         return float(1.0 - np.exp(-c_i * (dosis + d_i)))
 
 
-# ------------------------------------------------------------
-# Prueba local
-# ------------------------------------------------------------
 if __name__ == "__main__":
     mb = MitscherlichBaule()
     print("Rendimiento maximo teorico A =", mb.A, "qq/mz")
-    print("-" * 55)
     escenarios = [
         (50,   30,  15,  25),
         (120,  85,  40,  60),

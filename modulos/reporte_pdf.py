@@ -1,7 +1,4 @@
-# ============================================================
-# modulos/reporte_pdf.py
-# Generador de reportes PDF
-# ============================================================
+"""Generacion automatica de reportes tecnicos agronómicos en formato PDF."""
 import os
 import shutil
 from datetime import datetime
@@ -18,6 +15,7 @@ COLOR_PRIMARIO = colors.HexColor("#2d6a4f")
 COLOR_SEC       = colors.HexColor("#b7e4c7")
 COLOR_FONDO     = colors.HexColor("#f1f8f5")
 
+
 def _safe_image(ruta, max_w=8*cm, max_h=5*cm):
     try:
         if ruta and os.path.exists(ruta):
@@ -26,21 +24,26 @@ def _safe_image(ruta, max_w=8*cm, max_h=5*cm):
         pass
     return None
 
+
 def _carpeta_descargas():
     home = Path.home()
     for nombre in ("Downloads", "Descargas", "downloads"):
         c = home / nombre
-        if c.exists() and c.is_dir(): return c
+        if c.exists() and c.is_dir():
+            return c
     destino = home / "Downloads"
     try:
         destino.mkdir(parents=True, exist_ok=True)
         return destino
-    except Exception: return None
+    except Exception:
+        return None
+
 
 def exportar_a_descargas(ruta_origen):
     try:
         destino_dir = _carpeta_descargas()
-        if destino_dir is None: return None
+        if destino_dir is None:
+            return None
         nombre = os.path.basename(ruta_origen)
         destino = destino_dir / nombre
         if destino.exists():
@@ -49,25 +52,38 @@ def exportar_a_descargas(ruta_origen):
             destino = destino_dir / f"{base}_{ts}{ext}"
         shutil.copy2(ruta_origen, destino)
         return str(destino)
-    except Exception as e:
+    except Exception:
         return None
+
 
 def generar_reporte(datos, nombre="reporte_tecnico.pdf"):
     os.makedirs("salidas", exist_ok=True)
     ruta = os.path.join("salidas", nombre)
 
-    doc = SimpleDocTemplate(ruta, pagesize=A4, leftMargin=2*cm, rightMargin=2*cm, topMargin=2*cm, bottomMargin=2*cm)
+    doc = SimpleDocTemplate(
+        ruta, pagesize=A4, leftMargin=2*cm, rightMargin=2*cm,
+        topMargin=2*cm, bottomMargin=2*cm
+    )
     estilos = getSampleStyleSheet()
-    estilos.add(ParagraphStyle(name="Titulo", parent=estilos["Title"], textColor=COLOR_PRIMARIO, fontSize=18, spaceAfter=6))
-    estilos.add(ParagraphStyle(name="Sub", parent=estilos["Heading2"], textColor=COLOR_PRIMARIO, fontSize=13, spaceAfter=6))
-    estilos.add(ParagraphStyle(name="Body2", parent=estilos["BodyText"], fontSize=9, leading=12))
+    estilos.add(ParagraphStyle(
+        name="Titulo", parent=estilos["Title"],
+        textColor=COLOR_PRIMARIO, fontSize=18, spaceAfter=6
+    ))
+    estilos.add(ParagraphStyle(
+        name="Sub", parent=estilos["Heading2"],
+        textColor=COLOR_PRIMARIO, fontSize=13, spaceAfter=6
+    ))
+    estilos.add(ParagraphStyle(
+        name="Body2", parent=estilos["BodyText"],
+        fontSize=9, leading=12
+    ))
 
     flow = []
     fecha = datetime.now().strftime("%Y-%m-%d %H:%M")
 
     # Encabezado
     flow.append(Paragraph("ASISTENTE INTELIGENTE PARA LA CAFICULTURA", estilos["Titulo"]))
-    flow.append(Paragraph("Reporte tecnico - Plataforma Integrada de Inteligencia Agricola S3", estilos["Body2"]))
+    flow.append(Paragraph("Reporte tecnico - Plataforma Integrada de Inteligencia Agricola", estilos["Body2"]))
     flow.append(Spacer(1, 0.4*cm))
 
     # 1. Datos generales
@@ -110,9 +126,8 @@ def generar_reporte(datos, nombre="reporte_tecnico.pdf"):
         flow.append(Paragraph("<i>No se registraron datos climaticos.</i>", estilos["Body2"]))
     flow.append(Spacer(1, 0.4*cm))
 
-    # 3. Imagenes (Diagnostico IA)
+    # 3. Imagenes foliares
     imagenes_raw = datos.get("imagenes") or []
-    # Deduplicar imagenes por nombre o ruta
     imagenes = []
     rutas_vistas = set()
     for im in imagenes_raw:
@@ -154,8 +169,10 @@ def generar_reporte(datos, nombre="reporte_tecnico.pdf"):
             just = img.get("justificacion", "")
             nota = img.get("nota_cruce", "")
             texto = f"<b>Diagnostico:</b> {img.get('clase','').replace('_',' ')}<br/>"
-            if just: texto += f"<b>Justificacion tecnica:</b> {just}<br/>"
-            if nota: texto += f"<i>{nota}</i>"
+            if just:
+                texto += f"<b>Justificacion tecnica:</b> {just}<br/>"
+            if nota:
+                texto += f"<i>{nota}</i>"
             
             if img_obj:
                 flow.append(Paragraph(texto, estilos["Body2"]))
@@ -228,13 +245,12 @@ def generar_reporte(datos, nombre="reporte_tecnico.pdf"):
         from modulos.precios import leer_precios_actuales
         precios_mkt = leer_precios_actuales()
         
-        # Precios unitarios sincronizados con algoritmo_genetico.py
         p_agua = 12.0
-        p_n = precios_mkt.get("precio_urea_qq_nio", 1650.0) / 100.0   # 16.5 C$/kg
-        p_p = precios_mkt.get("precio_kcl_qq_nio", 1400.0) / 80.0     # 17.5 C$/kg
-        p_k = precios_mkt.get("precio_kcl_qq_nio", 1400.0) / 60.0     # 23.33 C$/kg
-        p_fung = precios_mkt.get("precio_fungicida_litro_nio", 950.0) # 950 C$/L
-        p_mo = precios_mkt.get("costo_aplicacion_nio", 500.0)         # 500 C$/mz
+        p_n = precios_mkt.get("precio_urea_qq_nio", 1650.0) / 100.0
+        p_p = precios_mkt.get("precio_kcl_qq_nio", 1400.0) / 80.0
+        p_k = precios_mkt.get("precio_kcl_qq_nio", 1400.0) / 60.0
+        p_fung = precios_mkt.get("precio_fungicida_litro_nio", 950.0)
+        p_mo = precios_mkt.get("costo_aplicacion_nio", 500.0)
 
         riego_val = float(dosis.get("riego_m3", 0))
         n_val = float(dosis.get("N_kg", 0))
@@ -252,7 +268,6 @@ def generar_reporte(datos, nombre="reporte_tecnico.pdf"):
         costo_total_calculado = c_riego + c_n + c_p + c_k + c_fung + c_mo
         costo_total_plan = float(opt.get("costo_total_nio") or costo_total_calculado)
 
-        # Ajuste fino para concordancia matematica al centavo
         diff = round(costo_total_plan - costo_total_calculado, 2)
         if abs(diff) > 0:
             c_mo = round(c_mo + diff, 2)

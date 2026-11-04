@@ -1,8 +1,4 @@
-# ============================================================
-# modulos/clima_api.py
-# Open-Meteo + fallback + coordenadas por departamento
-# Referencia: IA.docx §4.1
-# ============================================================
+"""Consulta de clima via Open-Meteo con coordenadas departamentales y fallback."""
 import requests
 
 
@@ -36,7 +32,6 @@ class ModuloClima:
         self.timeout = timeout
         self.url = "https://api.open-meteo.com/v1/forecast"
 
-    # --------------------------------------------------------
     def set_departamento(self, depto):
         """Cambia las coordenadas segun el departamento de la finca."""
         if depto in DEPTO_COORDS:
@@ -46,7 +41,6 @@ class ModuloClima:
             self.departamento = "Matagalpa"
             self.lat, self.lon = DEPTO_COORDS["Matagalpa"]
 
-    # --------------------------------------------------------
     def obtener_datos_actuales(self):
         params = {
             "latitude":  self.lat,
@@ -73,7 +67,6 @@ class ModuloClima:
             print(f"[clima] Fallo en API ({e}). Activando fallback.")
             return self._fallback()
 
-    # --------------------------------------------------------
     def _fallback(self):
         return {
             "temperatura":       22.5,

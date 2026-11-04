@@ -1,7 +1,4 @@
-# ============================================================
-# main.py
-# Interfaz de consola del Asistente Caficultura
-# ============================================================
+"""Interfaz de consola del Asistente Caficultura."""
 import sys
 from modulos.chatbot import ChatbotCaficultura
 
@@ -26,14 +23,12 @@ def main():
         if not entrada:
             continue
         if entrada.lower() in ("salir", "exit", "quit"):
-            print("Hasta pronto.")
+            print("Hasta luego. Buenas cosechas.")
             break
 
-        try:
-            respuesta, intent = bot.responder(entrada)
-            print(f"\nASISTENTE [{intent}]:\n{respuesta}")
-        except Exception as e:
-            print(f"\nERROR: {e}", file=sys.stderr)
+        respuesta, intent = bot.responder(entrada)
+        print(f"\nASISTENTE [{intent}]:")
+        print(respuesta)
 
 
 if __name__ == "__main__":

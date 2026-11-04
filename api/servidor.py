@@ -1,8 +1,4 @@
-# ============================================================
-# api/servidor.py
-# API REST con FastAPI - expone todos los modulos del sistema
-# Ejecutar: uvicorn api.servidor:app --reload
-# ============================================================
+"""Servidor API REST con FastAPI para los servicios del Asistente Caficultura."""
 import os
 import base64
 import shutil
@@ -20,14 +16,12 @@ from modulos.algoritmo_genetico import OptimizacionGenetica
 from modulos.reporte_pdf        import generar_reporte
 from analisis_sensibilidad      import ejecutar_analisis
 
-
 app = FastAPI(
     title="Asistente Caficultura API",
     description="API REST del Asistente Inteligente para la Caficultura Nicaraguense",
     version="1.0.0",
 )
 
-# Instancias unicas compartidas
 bot   = ChatbotCaficultura()
 cnn   = ClasificadorVisionCNN()
 llm   = OraculoAgronomoLLM()
@@ -35,19 +29,19 @@ clima = ModuloClima()
 ag    = OptimizacionGenetica(generaciones=40, tam_poblacion=60)
 
 
-# ------------------------------------------------------------
-# Modelos de entrada
-# ------------------------------------------------------------
 class ConsultaChat(BaseModel):
     texto: str
+
 
 class ConsultaLLM(BaseModel):
     texto: str
     contexto_finca: str = ""
 
+
 class OptimizarIn(BaseModel):
     superficie_mz: float = 1.0
     riesgo_roya_pct: float = 60.0
+
 
 class ReporteIn(BaseModel):
     sesion_id: str = "API"
@@ -59,9 +53,6 @@ class ReporteIn(BaseModel):
     optimizacion: dict = {}
 
 
-# ------------------------------------------------------------
-# Endpoints
-# ------------------------------------------------------------
 @app.get("/salud")
 def salud():
     return {"estado": "ok", "servicio": "Asistente Caficultura API"}
@@ -168,7 +159,6 @@ def get_kpis():
     return calcular_kpis()
 
 
-# ------------------------------------------------------------
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)

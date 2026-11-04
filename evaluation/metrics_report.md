@@ -10,11 +10,11 @@
 
 | Métrica | Meta / Umbral Exigido | Valor Obtenido | Estado |
 |---|---|---|---|
-| **Exactitud de Intención (Intent Accuracy)** | $\ge 90\%$ | **91.7\%** | ✅ Cumple |
-| **F1-Score de Entidades (Entity F1)** | $\ge 0.85$ | **0.870** | ✅ Cumple |
-| **Tasa de Éxito de Tarea (Task Success Rate)** | $\ge 90\%$ | **100.0\%** | ✅ Cumple |
-| **Tasa de Caída a Fallback (Fallback Rate)** | $\le 15\%$ | **0.0\%** | ✅ Cumple |
-| **Satisfacción del Usuario (CSAT Promedio)** | $\ge 4.0 / 5.0$ | **4.8 / 5.0** | ✅ Cumple |
+| **Exactitud de Intención (Intent Accuracy)** | $\ge 90\%$ | **91.7\%** | Cumple |
+| **F1-Score de Entidades (Entity F1)** | $\ge 0.85$ | **0.870** | Cumple |
+| **Tasa de Éxito de Tarea (Task Success Rate)** | $\ge 90\%$ | **100.0\%** | Cumple |
+| **Tasa de Caída a Fallback (Fallback Rate)** | $\le 15\%$ | **0.0\%** | Cumple |
+| **Satisfacción del Usuario (CSAT Promedio)** | $\ge 4.0 / 5.0$ | **4.8 / 5.0** | Cumple |
 
 ---
 

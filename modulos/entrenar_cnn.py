@@ -1,10 +1,4 @@
-# ============================================================
-# modulos/entrenar_cnn.py
-# Entrenamiento MobileNetV3 con Transfer Learning
-# Referencia: IA.docx §4.4
-# Uso:
-#   python -m modulos.entrenar_cnn --dataset ruta/a/dataset
-# ============================================================
+"""Entrenamiento MobileNetV3 con Transfer Learning para clasificacion foliar."""
 import os
 import argparse
 
@@ -47,11 +41,10 @@ def construir_modelo(num_clases, img_size=224):
 def entrenar(dataset_dir, epochs=15, batch_size=16, img_size=224,
              salida="modelos/cnn_cafe.h5"):
     if not TF_OK:
-        print("ERROR: TensorFlow no esta instalado.")
-        print("  pip install tensorflow")
+        print("TensorFlow no disponible en el entorno.")
         return
     if not os.path.isdir(dataset_dir):
-        print(f"ERROR: no existe el directorio {dataset_dir}")
+        print(f"Directorio no encontrado: {dataset_dir}")
         return
 
     os.makedirs(os.path.dirname(salida) or ".", exist_ok=True)
@@ -93,16 +86,13 @@ def entrenar(dataset_dir, epochs=15, batch_size=16, img_size=224,
     acc = max(historial.history.get("val_accuracy", [0]))
     print(f"Mejor val_accuracy: {acc*100:.2f}%")
     print(f"Modelo guardado en: {salida}")
-    print("Para usarlo, verifique que vision_cnn.py cargue ese archivo.")
 
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("--dataset", required=True,
-                   help="Directorio con subcarpetas por clase")
-    p.add_argument("--epochs",  type=int, default=15)
-    p.add_argument("--batch",   type=int, default=16)
-    p.add_argument("--img",     type=int, default=224)
-    p.add_argument("--salida",  default="modelos/cnn_cafe.h5")
-    a = p.parse_args()
-    entrenar(a.dataset, a.epochs, a.batch, a.img, a.salida)
+    p.add_argument("--dataset", required=True)
+    p.add_argument("--epochs", type=int, default=15)
+    p.add_argument("--batch", type=int, default=16)
+    p.add_argument("--salida", default="modelos/cnn_cafe.h5")
+    args = p.parse_args()
+    entrenar(args.dataset, args.epochs, args.batch, salida=args.salida)

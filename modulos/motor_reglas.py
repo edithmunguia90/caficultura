@@ -1,8 +1,4 @@
-# ============================================================
-# modulos/motor_reglas.py
-# Motor de reglas determinista con soporte AND/OR
-# Referencia: IA.docx §3.2
-# ============================================================
+"""Motor de reglas determinista con encadenamiento hacia adelante y priorizacion."""
 import json
 import os
 import re
@@ -14,7 +10,6 @@ class MotorReglas:
 
     def __init__(self, ruta=None):
         if ruta is None:
-            # Buscar relativo o desde la raiz del modulo
             candidatos = [
                 os.path.join("datos", "reglas_produccion.json"),
                 os.path.join(os.path.dirname(__file__), "..", "datos", "reglas_produccion.json"),
@@ -31,7 +26,6 @@ class MotorReglas:
             self.data = json.load(f)
         self.reglas = self.data["reglas"]
 
-    # --------------------------------------------------------
     def _cumple(self, valor_real, condicion):
         """Evalua una condicion (operador, rango, lista, booleano)."""
         if isinstance(condicion, list):
@@ -39,15 +33,13 @@ class MotorReglas:
 
         if isinstance(condicion, bool):
             if isinstance(valor_real, str):
-                return valor_real.lower() in (
-                    "true", "si", "sí", "1") == condicion
+                return valor_real.lower() in ("true", "si", "sí", "1") == condicion
             return bool(valor_real) == condicion
 
         if isinstance(condicion, str):
             s = condicion.strip()
             # Rango "18-24"
-            m = re.match(
-                r"^(-?\d+(?:\.\d+)?)\s*-\s*(-?\d+(?:\.\d+)?)$", s)
+            m = re.match(r"^(-?\d+(?:\.\d+)?)\s*-\s*(-?\d+(?:\.\d+)?)$", s)
             if m:
                 lo, hi = float(m.group(1)), float(m.group(2))
                 try:
@@ -66,7 +58,6 @@ class MotorReglas:
                 if op == "<":  return v < ref
                 if op == ">=": return v >= ref
                 if op == "<=": return v <= ref
-            # Igualdad de strings / numerica
             if isinstance(valor_real, str):
                 return valor_real == condicion
             try:
@@ -76,7 +67,6 @@ class MotorReglas:
 
         return valor_real == condicion
 
-    # --------------------------------------------------------
     def _eval_dict(self, condiciones, hechos):
         for k, v in condiciones.items():
             if k in ("operador_logico", "condiciones"):
@@ -87,11 +77,9 @@ class MotorReglas:
                 return False
         return True
 
-    # --------------------------------------------------------
     def _aplica(self, regla, hechos):
         si = regla.get("si", {})
 
-        # Formato con operador logico explicito
         if isinstance(si.get("condiciones"), list):
             op = str(si.get("operador_logico", "AND")).upper()
             resultados = []
@@ -106,10 +94,8 @@ class MotorReglas:
                 return True
             return any(resultados) if op == "OR" else all(resultados)
 
-        # Formato clasico (AND implicito)
         return self._eval_dict(si, hechos)
 
-    # --------------------------------------------------------
     def inferir(self, hechos):
         aplicables = []
         for regla in self.reglas:
@@ -128,6 +114,17 @@ class MotorReglas:
                 "prioridad": 0,
                 "diagnostico": "Sin diagnostico concluyente",
                 "recomendacion": "Proporcione mas datos o consulte al Oraculo LLM.",
-                "descripcion": "Ninguna regla coincide con los hechos.",
             }]
         return aplicables
+
+
+if __name__ == "__main__":
+    motor = MotorReglas()
+    print("Reglas cargadas:", len(motor.reglas))
+    hechos_prueba = {
+        "sintoma_hoja": "manchas_naranjas_polvorientas",
+        "temperatura": 22.0,
+        "humedad": 85.0,
+    }
+    resultado = motor.inferir(hechos_prueba)
+    print("Resultado inferencia:", resultado[0])

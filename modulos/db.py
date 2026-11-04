@@ -1,14 +1,9 @@
-# ============================================================
-# modulos/db.py
-# Persistencia SQLite de sesiones, mensajes y resultados
-# Referencia: IA.docx Pag. 59 (recomendacion de persistencia)
-# ============================================================
+"""Persistencia SQLite para sesiones, mensajes y diagnosticos del asistente."""
 import sqlite3
 from datetime import datetime
 from config import RUTA_BD
 
 
-# ------------------------------------------------------------
 def iniciar_db():
     """Crea las tablas si no existen."""
     con = sqlite3.connect(RUTA_BD)
@@ -72,9 +67,7 @@ def iniciar_db():
     con.close()
 
 
-# ------------------------------------------------------------
-def crear_sesion(sesion_uuid, perfil="pequeño_productor",
-                 zona="Matagalpa"):
+def crear_sesion(sesion_uuid, perfil="pequeño_productor", zona="Matagalpa"):
     con = sqlite3.connect(RUTA_BD)
     cur = con.cursor()
     cur.execute(
@@ -82,15 +75,13 @@ def crear_sesion(sesion_uuid, perfil="pequeño_productor",
         "VALUES (?, ?, ?, ?)",
         (sesion_uuid, perfil, zona, datetime.now().isoformat()),
     )
-    cur.execute("SELECT id FROM sesiones WHERE sesion_uuid = ?",
-                (sesion_uuid,))
+    cur.execute("SELECT id FROM sesiones WHERE sesion_uuid = ?", (sesion_uuid,))
     sid = cur.fetchone()[0]
     con.commit()
     con.close()
     return sid
 
 
-# ------------------------------------------------------------
 def guardar_mensaje(sesion_id, rol, texto, intent=None):
     con = sqlite3.connect(RUTA_BD)
     cur = con.cursor()
@@ -103,7 +94,6 @@ def guardar_mensaje(sesion_id, rol, texto, intent=None):
     con.close()
 
 
-# ------------------------------------------------------------
 def guardar_diagnostico(sesion_id, regla_id, diagnostico, riesgo):
     con = sqlite3.connect(RUTA_BD)
     cur = con.cursor()
@@ -124,7 +114,6 @@ def guardar_diagnostico(sesion_id, regla_id, diagnostico, riesgo):
     con.close()
 
 
-# ------------------------------------------------------------
 def guardar_optimizacion(sesion_id, res):
     con = sqlite3.connect(RUTA_BD)
     cur = con.cursor()
@@ -152,7 +141,6 @@ def guardar_optimizacion(sesion_id, res):
     con.close()
 
 
-# ------------------------------------------------------------
 def consultar_historial(limite=30):
     con = sqlite3.connect(RUTA_BD)
     con.row_factory = sqlite3.Row
@@ -171,7 +159,6 @@ def consultar_historial(limite=30):
     return filas
 
 
-# ------------------------------------------------------------
 def obtener_stats():
     con = sqlite3.connect(RUTA_BD)
     cur = con.cursor()
@@ -197,11 +184,10 @@ def obtener_stats():
     }
 
 
-# Inicializacion al importar
+# Inicializacion de esquemas al importar
 iniciar_db()
 
 
-# ------------------------------------------------------------
 if __name__ == "__main__":
     iniciar_db()
     print("Base de datos inicializada en:", RUTA_BD)

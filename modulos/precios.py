@@ -1,8 +1,4 @@
-# ============================================================
-# modulos/precios.py
-# Automatizacion de precios de cafe y tipo de cambio
-# Referencia: IA.docx Pag. 40
-# ============================================================
+"""Automatizacion de precios de cafe oro, insumos y tipo de cambio oficial."""
 import json
 import requests
 import yfinance as yf
@@ -27,9 +23,8 @@ VALORES_DEFECTO = {
 }
 
 
-# ------------------------------------------------------------
 def obtener_tipo_cambio(detallado=False):
-    """Consulta el tipo de cambio USD/NIO desde open.er-api.com (gratis)."""
+    """Consulta el tipo de cambio USD/NIO desde open.er-api.com con fallback."""
     try:
         r = requests.get("https://open.er-api.com/v6/latest/USD", timeout=8)
         r.raise_for_status()
@@ -44,13 +39,8 @@ def obtener_tipo_cambio(detallado=False):
     return val
 
 
-# ------------------------------------------------------------
 def obtener_precio_cafe(detallado=False):
-    """
-    Consulta el precio del cafe arabica (KC=F) en Yahoo Finance.
-    yfinance devuelve el precio en centavos USD/libra.
-    1 quintal = 100 libras, por lo que el valor crudo ya es USD/qq.
-    """
+    """Consulta el precio del cafe arabica (KC=F) en Yahoo Finance."""
     try:
         cafe = yf.Ticker("KC=F")
         hist = cafe.history(period="5d")
@@ -71,9 +61,8 @@ def obtener_precio_cafe(detallado=False):
     return val
 
 
-# ------------------------------------------------------------
 def actualizar_precios():
-    """Actualiza el JSON con los precios mas recientes y estado de conexion."""
+    """Actualiza el archivo JSON con los precios mas recientes y procedencia."""
     datos = VALORES_DEFECTO.copy()
     precio_cafe, cafe_en_vivo, fuente_cafe = obtener_precio_cafe(detallado=True)
     tipo_cambio, cambio_en_vivo, fuente_cambio = obtener_tipo_cambio(detallado=True)
@@ -96,7 +85,6 @@ def actualizar_precios():
     return datos
 
 
-# ------------------------------------------------------------
 def leer_precios_actuales():
     """Lee el JSON o genera uno nuevo si no existe."""
     try:
@@ -106,7 +94,6 @@ def leer_precios_actuales():
         return actualizar_precios()
 
 
-# ------------------------------------------------------------
 if __name__ == "__main__":
     print("Actualizando precios de mercado...")
     p = actualizar_precios()

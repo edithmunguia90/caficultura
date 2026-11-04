@@ -1,8 +1,4 @@
-# ============================================================
-# monitor_precios.py
-# Actualiza precios de mercado cada 6 horas
-# Ejecutar: python monitor_precios.py
-# ============================================================
+"""Actualiza precios de mercado cada 6 horas."""
 import time
 import schedule
 from datetime import datetime
@@ -17,7 +13,7 @@ def tarea():
     print(f"  Tipo de cambio:  {p['tipo_cambio_usd_nio']} NIO/USD")
 
 
-# Programar
+# Programar ejecucion periodica
 schedule.every(6).hours.do(tarea)
 
 

@@ -1,9 +1,4 @@
-# ============================================================
-# analisis_sensibilidad.py
-# Analisis de sensibilidad con 3 escenarios climaticos
-# Referencia: IA.docx §5.2
-# Uso: python analisis_sensibilidad.py
-# ============================================================
+"""Analisis de sensibilidad con 3 escenarios climaticos."""
 import json
 from datetime import datetime
 from modulos.red_bayesiana import RedBayesianaCafe
