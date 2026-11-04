@@ -51,3 +51,4 @@ salidas/admin_*
 
 # Zips
 *.zip
+.agents/

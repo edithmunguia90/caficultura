@@ -1,0 +1,22 @@
+# Dependencias principales del Asistente Caficultura
+streamlit==1.66.1
+pandas==3.1.0
+numpy==2.5.4
+requests==2.34.2
+yfinance==1.8.0
+schedule==1.2.2
+pgmpy==1.1.2
+reportlab==5.1.0
+matplotlib==3.11.2
+fastapi==0.162.0
+uvicorn==0.54.0
+python-multipart==0.0.33
+pydantic==2.14.2
+opencv-python==5.0.0.93
+pillow==13.0.0
+python-dotenv==1.2.4
+google-genai==2.34.0
+ollama==0.6.3
+pytest==9.2.0
+scikit-learn==1.9.1
+scipy==1.18.1
