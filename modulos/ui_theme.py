@@ -105,13 +105,28 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
     # Reglas específicas según si el sidebar está en modo riel compacto o completo
     if sidebar_compacto:
         compact_css = """
-        [data-testid="stSidebar"] {
+        section.stSidebar,
+        .stSidebar,
+        section[data-testid="stSidebar"],
+        [data-testid="stSidebar"],
+        section[data-testid="stSidebar"][data-collapsed="true"],
+        section[data-testid="stSidebar"][data-collapsed="false"],
+        section[data-testid="stSidebar"][aria-expanded="false"],
+        section[data-testid="stSidebar"][aria-expanded="true"] {
             width: 72px !important;
             min-width: 72px !important;
             max-width: 72px !important;
+            transform: none !important;
+            margin-left: 0 !important;
+            left: 0 !important;
+            display: flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: relative !important;
+            flex-shrink: 0 !important;
         }
         [data-testid="stSidebar"] .block-container {
-            padding: 0.85rem 0.4rem !important;
+            padding: 0.85rem 0.35rem !important;
         }
         .axiom-brand span,
         .sidebar-section-title,
@@ -125,24 +140,42 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         [data-testid="stSidebar"] [data-testid="stPopover"] > button span {
             display: none !important;
         }
+        .st-key-sidebar_toggle_rail button,
         .st-key-sidebar_new_chat button,
         [data-testid="stSidebar"] [class*="st-key-nav_"] button,
         [data-testid="stSidebar"] [data-testid="stPopover"] > button {
             justify-content: center !important;
-            padding: 0.4rem !important;
+            padding: 0.45rem !important;
+            width: 100% !important;
         }
         .axiom-brand {
             justify-content: center !important;
             padding-left: 0 !important;
             padding-right: 0 !important;
+            margin-bottom: 0.4rem !important;
         }
         """
     else:
         compact_css = """
-        [data-testid="stSidebar"] {
+        section.stSidebar,
+        .stSidebar,
+        section[data-testid="stSidebar"],
+        [data-testid="stSidebar"],
+        section[data-testid="stSidebar"][data-collapsed="true"],
+        section[data-testid="stSidebar"][data-collapsed="false"],
+        section[data-testid="stSidebar"][aria-expanded="false"],
+        section[data-testid="stSidebar"][aria-expanded="true"] {
             width: 240px !important;
             min-width: 240px !important;
             max-width: 240px !important;
+            transform: none !important;
+            margin-left: 0 !important;
+            left: 0 !important;
+            display: flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: relative !important;
+            flex-shrink: 0 !important;
         }
         """
 
@@ -206,10 +239,56 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         display: none !important;
     }}
 
-    /* OCULTAR EL BOTON NATIVO QUE COLAPSABA EL SIDEBAR A 0PX (HACIENDO DESAPARECER LOS ICONOS) */
+    /* FORZAR VISIBILIDAD PERMANENTE DEL SIDEBAR: NUNCA PERMITIR QUE SE TRASLADE FUERA DE PANTALLA NI SE OCULTE */
+    section.stSidebar,
+    .stSidebar,
+    section[data-testid="stSidebar"],
+    [data-testid="stSidebar"],
+    section[data-testid="stSidebar"][data-collapsed="true"],
+    section[data-testid="stSidebar"][data-collapsed="false"],
+    section[data-testid="stSidebar"][aria-expanded="false"],
+    section[data-testid="stSidebar"][aria-expanded="true"] {{
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        transform: none !important;
+        margin-left: 0 !important;
+        left: 0 !important;
+        position: relative !important;
+        flex-shrink: 0 !important;
+        box-shadow: none !important;
+        background-color: var(--sidebar) !important;
+        border-right: 1px solid var(--border) !important;
+        transition: width 0.2s var(--ease-out-expo) !important;
+    }}
+
+    [data-testid="stSidebarContent"],
+    [data-testid="stSidebarUserContent"] {{
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        transform: none !important;
+        width: 100% !important;
+    }}
+
+    /* Ocultar botones nativos y manejador de redimensionamiento que puedan colapsar el sidebar a 0px */
     [data-testid="stSidebarCollapseButton"],
-    [data-testid="stSidebarCollapsedControl"] {{
+    [data-testid="stSidebarCollapsedControl"],
+    [data-testid="stExpandSidebarButton"],
+    [data-testid="stSidebarResizeHandle"] {{
         display: none !important;
+    }}
+
+    /* Columnas internas dentro del sidebar sin overflow ni anchos minimos excesivos */
+    [data-testid="stSidebar"] [data-testid="column"] {{
+        min-width: 0 !important;
+    }}
+
+    /* El area principal ocupa fluidamente el resto de la pantalla */
+    [data-testid="stMain"],
+    section.main {{
+        flex: 1 1 0% !important;
+        min-width: 0 !important;
     }}
 
     /* Contenedor principal con max-width amplio y responsive */
@@ -222,12 +301,6 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         width: 100% !important;
     }}
 
-    /* Barra lateral estilo Axiom */
-    [data-testid="stSidebar"] {{
-        background-color: var(--sidebar) !important;
-        border-right: 1px solid var(--border) !important;
-        transition: width 0.2s var(--ease-out-expo) !important;
-    }}
     [data-testid="stSidebar"] .block-container {{
         padding: 1rem 0.75rem !important;
         max-width: 100% !important;

@@ -171,24 +171,29 @@ _, nivel_detalle, inicial_rol = MAPA_PERFILES[etiqueta_perfil_actual]
 # ==========================================
 with st.sidebar:
     # Encabezado con conmutador: nunca oculta los iconos, solo oculta los nombres
-    col_b_logo, col_b_rail = st.columns([3, 1] if not st.session_state.sidebar_compact else [1, 1])
-    with col_b_logo:
-        render_brand_top_row(sidebar_compacto=st.session_state.sidebar_compact)
-    with col_b_rail:
-        icon_toggle = ">>" if st.session_state.sidebar_compact else "<<"
-        tooltip_toggle = (
-            "Expandir menu (mostrar nombres)"
-            if st.session_state.sidebar_compact
-            else "Modo compacto (ocultar nombres, mantener iconos)"
-        )
+    if st.session_state.sidebar_compact:
+        render_brand_top_row(sidebar_compacto=True)
         if st.button(
-            icon_toggle,
+            ">>",
             key="sidebar_toggle_rail",
-            help=tooltip_toggle,
+            help="Expandir menu (mostrar nombres)",
             use_container_width=True,
         ):
-            st.session_state.sidebar_compact = not st.session_state.sidebar_compact
+            st.session_state.sidebar_compact = False
             st.rerun()
+    else:
+        col_b_logo, col_b_rail = st.columns([3, 1])
+        with col_b_logo:
+            render_brand_top_row(sidebar_compacto=False)
+        with col_b_rail:
+            if st.button(
+                "<<",
+                key="sidebar_toggle_rail",
+                help="Modo compacto (ocultar nombres, mantener iconos)",
+                use_container_width=True,
+            ):
+                st.session_state.sidebar_compact = True
+                st.rerun()
 
     # Boton de nueva consulta
     txt_new = "" if st.session_state.sidebar_compact else "Nueva consulta"
