@@ -1,9 +1,4 @@
-# ============================================================
-# modulos/chatbot.py
-# Fachada (Facade Pattern) para el Asistente Inteligente
-# Delega en src/nlu, src/dialogue y src/nlg preservando
-# retrocompatibilidad absoluta con pruebas y UI.
-# ============================================================
+"""Fachada principal del Asistente Caficultura."""
 import os
 import time
 import uuid
@@ -116,6 +111,8 @@ class ChatbotCaficultura:
             "modo": modo,
             "justificacion": justificacion,
         })
+        if "lluvia_previa" not in self.ctx:
+            self._autocompletar_clima()
 
     def detectar_intent(self, texto: str) -> str:
         """Clasifica la intención mediante el componente NLU."""
@@ -126,9 +123,13 @@ class ChatbotCaficultura:
         flujo = self.ctx.get("flujo_pendiente")
         return self.classifier.extraer_entidades(texto, flujo_pendiente=flujo)
 
-    def _autocompletar_clima(self) -> dict:
+    def autocompletar_clima(self) -> dict:
         """Delega en el DialogueManager el autocompletado microclimático."""
         return self.dm.autocompletar_clima()
+
+    def _autocompletar_clima(self) -> dict:
+        """Alias retrocompatible."""
+        return self.autocompletar_clima()
 
     def responder(self, texto_usuario: str) -> tuple:
         """Procesa el turno conversacional completo."""
@@ -145,8 +146,8 @@ class ChatbotCaficultura:
         if ents.pop("_auto_clima", False):
             self._autocompletar_clima()
 
-        # Si el usuario describió síntomas, corregir intención
-        if "sintoma_observado" in ents:
+        # Si el usuario describió síntomas, corregir intención a síntoma salvo que consulte tratamiento
+        if "sintoma_observado" in ents and intent != "Consultar_Tratamiento_Recomendacion":
             intent = "Consultar_Diagnostico_Sintoma"
 
         self.ctx.update(ents)

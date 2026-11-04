@@ -62,6 +62,10 @@ _SINTOMAS_MAP = {
 }
 
 INTENTS = {
+    "Saludo": [
+        r"^hola\b", r"^buenos d[ií]as\b", r"^buenas tardes\b", r"^buenas noches\b",
+        r"^saludos\b", r"^qu[eé] tal\b",
+    ],
     "Confirmar_Accion": [
         r"^s[ií]$", r"^confirmo\b", r"^confirmar\b", r"^de acuerdo\b",
         r"^adelante\b", r"^ok$", r"^proceda\b", r"^acepto\b",
@@ -86,8 +90,32 @@ INTENTS = {
     "Solicitar_Ayuda": [
         r"^ayuda\b", r"qu[eé] puedes", r"funciones", r"c[oó]mo funciona",
     ],
+    "Consultar_Tratamiento_Recomendacion": [
+        r"qu[eé]\s+hago",
+        r"qu[eé]\s+se\s+hace",
+        r"qu[eé]\s+puedo\s+hacer",
+        r"c[oó]mo\s+tratar",
+        r"c[oó]mo\s+control",
+        r"c[oó]mo\s+curar",
+        r"c[oó]mo\s+combatir",
+        r"c[oó]mo\s+manejar",
+        r"c[oó]mo\s+eliminar",
+        r"qu[eé]\s+aplico",
+        r"qu[eé]\s+aplicar",
+        r"qu[eé]\s+echar",
+        r"qu[eé]\s+poner",
+        r"qu[eé]\s+recomiend",
+        r"\bremedio",
+        r"\btratamiento",
+        r"\bmanejo\b",
+        r"control\s+de",
+        r"\bfungicida\b",
+        r"dosis\s+de\s+fungicida",
+        r"recomendaci[oó]n",
+    ],
     "Consultar_Diagnostico_Sintoma": [
-        r"mancha", r"s[ií]ntoma", r"enfermed", r"pustul", r"pústul", r"roya",
+        r"mancha", r"s[ií]ntoma", r"identificar.{0,10}enfermedad", r"qu[eé]\s+enfermedad",
+        r"enfermedad\s+en\s+la\s+hoja", r"pustul", r"pústul", r"roya",
         r"antracnosis", r"ojo de gallo", r"hoja.{0,10}amarilla", r"polvo amarillo",
         r"broca", r"minador", r"nematodo", r"telara", r"telaraña",
         r"ra[ií]z", r"clorosis", r"deficien", r"puntos negros", r"halo amarillo",
@@ -116,6 +144,13 @@ class IntentClassifier:
     def detectar_intent(self, texto: str):
         """Alias retrocompatible para detección de intención."""
         return self.predecir_intencion(texto)
+
+    def clasificar(self, texto: str):
+        """Clasifica el texto y extrae entidades, devolviendo (intent, confianza, entidades)."""
+        intent = self.predecir_intencion(texto)
+        entidades = self.extraer_entidades(texto)
+        confianza = 0.95 if intent != "Consultar_Oraculo_LLM_Fallback" else 0.40
+        return intent, confianza, entidades
 
     def extraer_entidades(self, texto: str, flujo_pendiente: str = None) -> dict:
         """Extrae entidades semánticas clave a partir de la entrada del usuario."""

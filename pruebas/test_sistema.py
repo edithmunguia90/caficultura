@@ -1,9 +1,4 @@
-# ============================================================
-# pruebas/test_sistema.py
-# Pruebas unitarias y de integracion
-# Referencia: IA_Entregable1.pdf Seccion 10.3
-# Ejecutar: pytest pruebas/ -v
-# ============================================================
+"""Pruebas unitarias y de integracion del sistema."""
 import os
 import numpy as np
 import cv2
@@ -25,9 +20,7 @@ from modulos.kpis               import (
 from modulos.chatbot            import ChatbotCaficultura
 
 
-# ------------------------------------------------------------
 # Pruebas unitarias
-# ------------------------------------------------------------
 def test_motor_reglas_roya():
     m = MotorReglas()
     hechos = {
@@ -189,9 +182,7 @@ def test_precios_json_valido():
     assert 50 <= p["precio_cafe_oro_qq_usd"] <= 500
 
 
-# ------------------------------------------------------------
 # Pruebas de integracion
-# ------------------------------------------------------------
 def test_chatbot_flujo_diagnostico_completo():
     bot = ChatbotCaficultura()
     r1, _ = bot.responder("Tengo manchas naranjas en hojas")
@@ -274,9 +265,7 @@ def test_reporte_pdf_se_crea():
             os.remove(ruta)
 
 
-# ------------------------------------------------------------
 # Pruebas de la fase 6 (CSAT, OR, sensibilidad, endpoints)
-# ------------------------------------------------------------
 def test_csat_registro_y_calculo():
     """CSAT se registra y se promedia correctamente."""
     registrar_turno(
@@ -322,9 +311,7 @@ def test_api_endpoints_existen():
         assert ruta in paths, f"Falta endpoint {ruta}"
 
 
-# ------------------------------------------------------------
 # Pruebas fase 7 - Departamentos + enfermedades ampliadas
-# ------------------------------------------------------------
 def test_departamentos_17_unidades():
     """Verifica que esten las 15 + 2 RACCN/RACCS."""
     from modulos.chatbot import DEPARTAMENTOS
@@ -375,9 +362,7 @@ def test_extraer_departamento_desde_texto():
     assert ents.get("departamento_zona") == "Jinotega"
 
 
-# ------------------------------------------------------------
 # Pruebas fase 8 - Auto-clima
-# ------------------------------------------------------------
 def test_clima_por_departamento():
     """ModuloClima debe aceptar set_departamento() de los 17."""
     from modulos.clima_api import ModuloClima, DEPTO_COORDS
@@ -402,3 +387,19 @@ def test_auto_clima_con_no_se():
     assert bot.ctx.get("temperatura") is not None
     # La respuesta debe seguir pidiendo humedad (o ya avanzar a diagnostico)
     assert "humedad" in r.lower() or "diagnostico" in r.lower() or "riesgo" in r.lower()
+
+
+def test_chatbot_tratamiento_post_imagen():
+    """Verifica que tras analizar una imagen, la consulta de que hacer responda con manejo agronomico."""
+    from modulos.chatbot import ChatbotCaficultura
+    bot = ChatbotCaficultura()
+    bot.registrar_imagen(
+        ruta="test_hoja.jpg",
+        clase="Roya",
+        confianza=0.98,
+        justificacion="Lesiones de hongo Hemileia vastatrix",
+    )
+    r, intent = bot.responder("Que hago con este tipo de enfermedad?")
+    assert intent == "Consultar_Tratamiento_Recomendacion"
+    assert "ha llovido" not in r.lower()
+    assert len(r) > 20

@@ -68,9 +68,30 @@ class DialogueManager:
         }
         return datos
 
+    def procesar_turno(self, texto: str, historial_chat: list = None) -> tuple:
+        """Procesa un turno conversacional completo a partir del texto del usuario."""
+        from src.nlu.intent_classifier import IntentClassifier
+        nlu = IntentClassifier()
+        intent = nlu.predecir_intencion(texto)
+        entidades = nlu.extraer_entidades(texto)
+        self.ctx.update(entidades)
+        resultado = self.despachar(intent, texto, historial_chat or [])
+        if isinstance(resultado, tuple):
+            return resultado[0], resultado[1]
+        return str(resultado), intent
+
     def despachar(self, intent: str, texto_usuario: str, historial_chat: list) -> tuple:
         """Enruta la intención hacia la acción correspondiente según el estado."""
         try:
+            if intent == "Saludo":
+                return (
+                    "¡Hola! Soy tu Asistente Técnico para la Caficultura en Nicaragua. "
+                    "¿En qué puedo ayudarte hoy? Puedes consultarme sobre diagnóstico foliar, "
+                    "pronóstico de clima, plan de fertilización optimizada o precios de mercado.",
+                    intent,
+                    False,
+                )
+
             if intent == "Confirmar_Accion":
                 return ("Acción confirmada. ¿En qué más puedo ayudarle?", intent, False)
 
@@ -111,6 +132,9 @@ class DialogueManager:
                     intent, False,
                 )
 
+            if intent == "Consultar_Tratamiento_Recomendacion":
+                return self._flujo_tratamiento(texto_usuario, historial_chat)
+
             if intent == "Consultar_Diagnostico_Sintoma":
                 return self._flujo_diagnostico()
 
@@ -124,8 +148,75 @@ class DialogueManager:
         except Exception as e:
             return (f"Error interno: {e}", intent, True)
 
+    def _flujo_tratamiento(self, texto_usuario: str, historial_chat: list) -> tuple:
+        """Genera recomendaciones agronómicas y plan de acción para enfermedades o plagas."""
+        t_low = texto_usuario.lower()
+        enfermedad_objetivo = None
+
+        mapa_nombres = {
+            "roya": "Roya",
+            "antracnosis": "Antracnosis",
+            "ojo de gallo": "Ojo de gallo",
+            "mancha de hierro": "Mancha de hierro",
+            "cercospora": "Mancha de hierro",
+            "nitrogeno": "Deficiencia de Nitrogeno",
+            "clorosis": "Deficiencia de Nitrogeno",
+            "broca": "Broca del cafe",
+        }
+        for k, v in mapa_nombres.items():
+            if k in t_low:
+                enfermedad_objetivo = v
+                break
+
+        if not enfermedad_objetivo and self.ctx.get("imagenes_analizadas"):
+            ult = self.ctx["imagenes_analizadas"][-1]
+            enfermedad_objetivo = ult.get("clase", "Roya").replace("_", " ")
+
+        if not enfermedad_objetivo and self.ctx.get("diagnosticos"):
+            enfermedad_objetivo = self.ctx["diagnosticos"][0].get("diagnostico", "Roya")
+
+        if not enfermedad_objetivo:
+            enfermedad_objetivo = "Roya"
+
+        if self.llm._esta_corriendo():
+            contexto = self._contexto_finca_texto()
+            contexto += f" | Consulta sobre manejo agronómico para: {enfermedad_objetivo}."
+            respuesta = self.llm.consultar_oraculo(texto_usuario, contexto, historial_chat)
+            return (respuesta, "Consultar_Tratamiento_Recomendacion", False)
+
+        depto = self.ctx.get("departamento_zona", "Matagalpa")
+        recomendaciones_tecnicas = {
+            "Roya": (
+                f"Recomendaciones tecnicas para Roya (Hemileia vastatrix) en {depto}:\n"
+                "- Control quimico: Aplicar fungicida cuprico (oxicloruro de cobre 2-3 kg/mz) o triadimefon (0.5 L/mz).\n"
+                "- Manejo cultural: Regular la sombra al 40-50% para favorecer ventilacion.\n"
+                "- Poda sanitaria: Eliminar hojas fuertemente afectadas para reducir esporas.\n"
+                "- Nutricion: Reforzar con potasio y nitrogeno balanceado."
+            ),
+            "Antracnosis": (
+                f"Recomendaciones tecnicas para Antracnosis en {depto}:\n"
+                "- Podar ramas afectadas y desinfectar herramientas.\n"
+                "- Aplicar benomil (1 kg/mz) o fungicida preventivo.\n"
+                "- Mejorar drenaje y aireacion del lote."
+            ),
+            "Ojo de gallo": (
+                f"Recomendaciones tecnicas para Ojo de gallo en {depto}:\n"
+                "- Reducir sombra para mejorar entrada de sol y ventilacion.\n"
+                "- Aplicar caldo bordeles (2%) o fungicida cuprico.\n"
+                "- Recolectar y enterrar hojas caidas."
+            ),
+        }
+        recom = recomendaciones_tecnicas.get(
+            enfermedad_objetivo,
+            f"Para el manejo de {enfermedad_objetivo} en {depto}: Aplicar medidas fitosanitarias preventivas, podas sanitarias y fungicidas registrados ante el IPSA."
+        )
+        return (recom, "Consultar_Tratamiento_Recomendacion", False)
+
     def _flujo_diagnostico(self) -> tuple:
         """Cuestionario secuencial e inferencia diagnóstica."""
+        if self.ctx.get("imagenes_analizadas") and "lluvia_previa" not in self.ctx:
+            self.autocompletar_clima()
+
         if "lluvia_previa" not in self.ctx:
             self.ctx["flujo_pendiente"] = "lluvia"
             return (
@@ -230,10 +321,18 @@ class DialogueManager:
         if self.ctx.get("superficie_manzanas"):
             partes.append(f"Superficie: {self.ctx['superficie_manzanas']} mz")
         if self.ctx.get("imagenes_analizadas"):
-            clases = [img["clase"] for img in self.ctx["imagenes_analizadas"]]
-            partes.append(f"Enfermedades vistas en fotos: {', '.join(clases)}")
+            detalles_imgs = []
+            for img in self.ctx["imagenes_analizadas"]:
+                c = img.get("clase", "Muestra").replace("_", " ")
+                conf = img.get("confianza", 0.0) * 100
+                just = img.get("justificacion", "")
+                txt_img = f"{c} ({conf:.1f}% certeza)"
+                if just:
+                    txt_img += f": {just}"
+                detalles_imgs.append(txt_img)
+            partes.append(f"Muestras foliares analizadas: {'; '.join(detalles_imgs)}")
         if self.ctx.get("diagnosticos"):
-            partes.append(f"Diagnóstico previo: {self.ctx['diagnosticos'][0]['diagnostico']}")
+            partes.append(f"Diagnóstico previo: {self.ctx['diagnosticos'][0].get('diagnostico', '')}")
         if self.ctx.get("clima"):
             c = self.ctx["clima"]
             partes.append(f"Clima: {c.get('temperatura')}°C, HR {c.get('humedad_relativa')}%")

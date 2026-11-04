@@ -166,30 +166,27 @@ INV_PERFILES = {v[0]: k for k, v in MAPA_PERFILES.items()}
 etiqueta_perfil_actual = INV_PERFILES.get(perfil_actual, "Productor")
 _, nivel_detalle, inicial_rol = MAPA_PERFILES[etiqueta_perfil_actual]
 
-# ==========================================
-# BARRA LATERAL (CONMUTADOR DE RIEL COMPACTO)
-# ==========================================
+# Barra lateral y riel de navegación
 with st.sidebar:
-    # Encabezado con conmutador: nunca oculta los iconos, solo oculta los nombres
     if st.session_state.sidebar_compact:
         render_brand_top_row(sidebar_compacto=True)
         if st.button(
-            ">>",
+            "",
             key="sidebar_toggle_rail",
-            help="Expandir menu (mostrar nombres)",
+            help="Expandir menu lateral",
             use_container_width=True,
         ):
             st.session_state.sidebar_compact = False
             st.rerun()
     else:
-        col_b_logo, col_b_rail = st.columns([3, 1])
+        col_b_logo, col_b_rail = st.columns([4, 1])
         with col_b_logo:
             render_brand_top_row(sidebar_compacto=False)
         with col_b_rail:
             if st.button(
-                "<<",
+                "",
                 key="sidebar_toggle_rail",
-                help="Modo compacto (ocultar nombres, mantener iconos)",
+                help="Colapsar menu lateral",
                 use_container_width=True,
             ):
                 st.session_state.sidebar_compact = True
@@ -318,15 +315,26 @@ with st.sidebar:
             st.session_state.modo_claro = toggle_claro
             st.rerun()
 
+        st.divider()
+        st.markdown("**Motores de Inteligencia Artificial**")
+        estado_ia = st.session_state.bot.llm.obtener_estado_ia()
+        st.caption(f"Motor activo: **{estado_ia['motor_principal']}**")
+        if estado_ia["gemini_ok"]:
+            st.success(f"Gemini API: {estado_ia['gemini_info']}")
+        else:
+            st.warning(f"Gemini API: {estado_ia['gemini_info']}")
+        if estado_ia["ollama_ok"]:
+            st.success(f"Ollama Local: {estado_ia['ollama_info']}")
+        else:
+            st.info(f"Ollama Local: {estado_ia['ollama_info']}")
+
 # Variables activas
 depto = st.session_state.bot.ctx.get("departamento_zona", "Matagalpa")
 superficie_mz = st.session_state.bot.ctx.get("superficie_manzanas", 1.0)
 perfil_key = st.session_state.bot.ctx.get("perfil", "pequeno_productor")
 _, nivel_detalle, _ = MAPA_PERFILES[INV_PERFILES.get(perfil_key, "Productor")]
 
-# ==========================================
-# CABECERA SUPERIOR
-# ==========================================
+# Cabecera superior
 col_top_title, col_top_actions = st.columns([7, 3])
 with col_top_title:
     render_topbar(st.session_state.vista_activa)
@@ -356,9 +364,7 @@ with col_top_actions:
             st.session_state.vista_activa = "Chat"
             st.rerun()
 
-# ==========================================
-# VISTA 1: CHAT
-# ==========================================
+# Vista de chat
 if st.session_state.vista_activa == "Chat":
     if not st.session_state.chat_historial:
         render_hero_greeting(
@@ -438,9 +444,7 @@ if st.session_state.vista_activa == "Chat":
             _procesar_entrada_chat(prompt_b)
             st.rerun()
 
-# ==========================================
-# VISTA 2: ESCANER FOLIAR
-# ==========================================
+# Vista de escaner foliar
 elif st.session_state.vista_activa == "Escaner":
     archivo = st.file_uploader(
         "Subir fotografia de hoja (JPG, PNG)",
@@ -502,23 +506,19 @@ elif st.session_state.vista_activa == "Escaner":
                 if resultado.get("justificacion"):
                     st.caption(_sin_emojis(resultado["justificacion"]))
 
-                if st.button("Continuar en el chat", type="primary", use_container_width=True):
-                    st.session_state.chat_historial.append(
-                        ("usuario", f"[Fotografia analizada: {archivo.name}]", None)
-                    )
-                    st.session_state.chat_historial.append(
-                        (
-                            "asistente",
-                            f"Diagnostico visual registrado: **{enfermedad}** ({confianza*100:.1f}% de confianza). {_sin_emojis(resultado.get('justificacion', ''))}",
-                            "Analizar_Imagen_Hoja",
-                        )
-                    )
+                if st.button("Continuar en el chat", key="btn_continue_chat", type="primary", use_container_width=True):
+                    msg_usr = f"[Fotografia analizada: {archivo.name}]"
+                    msg_asist = f"Diagnostico visual registrado: **{enfermedad}** ({confianza*100:.1f}% de confianza). {_sin_emojis(resultado.get('justificacion', ''))}"
+                    st.session_state.chat_historial.append(("usuario", msg_usr, None))
+                    st.session_state.chat_historial.append(("asistente", msg_asist, "Analizar_Imagen_Hoja"))
+                    # Sincronizar memoria y contexto del bot para el LLM y flujo agronómico
+                    st.session_state.bot.historial_chat.append({"role": "user", "content": msg_usr})
+                    st.session_state.bot.historial_chat.append({"role": "assistant", "content": msg_asist})
+                    st.session_state.bot.autocompletar_clima()
                     st.session_state.vista_activa = "Chat"
                     st.rerun()
 
-# ==========================================
-# VISTA 3: MERCADO E INSUMOS
-# ==========================================
+# Vista de mercado e insumos
 elif st.session_state.vista_activa == "Mercado":
     p = leer_precios_actuales()
     precio_usd = float(p["precio_cafe_oro_qq_usd"])
@@ -584,9 +584,7 @@ elif st.session_state.vista_activa == "Mercado":
             actualizar_precios()
         st.rerun()
 
-# ==========================================
-# VISTA 4: CALCULADORAS
-# ==========================================
+# Vista de calculadoras
 elif st.session_state.vista_activa == "Calculadoras":
     precios_actuales = leer_precios_actuales()
 
@@ -751,9 +749,7 @@ elif st.session_state.vista_activa == "Calculadoras":
                 unsafe_allow_html=True,
             )
 
-# ==========================================
-# VISTA 5: REPORTES
-# ==========================================
+# Vista de reportes
 elif st.session_state.vista_activa == "Reportes":
     bot = st.session_state.bot
     col_r1, col_r2 = st.columns([1, 1.6], gap="large")
@@ -777,7 +773,7 @@ elif st.session_state.vista_activa == "Reportes":
             unsafe_allow_html=True,
         )
 
-        if st.button("Generar Reporte PDF", type="primary", use_container_width=True):
+        if st.button("Generar Reporte PDF", key="btn_generate_pdf", type="primary", use_container_width=True):
             datos_pdf = {
                 "sesion_id": bot.sesion_uuid,
                 "zona": depto,
@@ -825,9 +821,7 @@ elif st.session_state.vista_activa == "Reportes":
         else:
             st.caption("Sin registros previos en la base de datos local.")
 
-# ==========================================
-# VISTA 6: METRICAS
-# ==========================================
+# Vista de metricas
 elif st.session_state.vista_activa == "Metricas":
     stats = obtener_stats()
     csat_avg = calcular_csat()
