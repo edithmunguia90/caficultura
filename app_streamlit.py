@@ -169,11 +169,10 @@ _, nivel_detalle, inicial_rol = MAPA_PERFILES[etiqueta_perfil_actual]
 # Barra lateral y riel de navegación
 with st.sidebar:
     if st.session_state.sidebar_compact:
-        render_brand_top_row(sidebar_compacto=True)
         if st.button(
             "",
             key="sidebar_toggle_rail",
-            help="Expandir menu lateral",
+            help="Expandir menu lateral (Caficultura)",
             use_container_width=True,
         ):
             st.session_state.sidebar_compact = False

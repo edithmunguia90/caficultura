@@ -107,6 +107,7 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
     # Reglas específicas según si el sidebar está en modo riel compacto o completo
     if sidebar_compacto:
         compact_css = """
+        /* MODO RIEL COMPACTO: Ancho optimizado (88px) y centrado exacto sin desbordamiento */
         section.stSidebar,
         .stSidebar,
         section[data-testid="stSidebar"],
@@ -115,9 +116,9 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         section[data-testid="stSidebar"][data-collapsed="false"],
         section[data-testid="stSidebar"][aria-expanded="false"],
         section[data-testid="stSidebar"][aria-expanded="true"] {
-            width: 80px !important;
-            min-width: 80px !important;
-            max-width: 80px !important;
+            width: 88px !important;
+            min-width: 88px !important;
+            max-width: 88px !important;
             transform: none !important;
             margin-left: 0 !important;
             left: 0 !important;
@@ -126,10 +127,43 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
             opacity: 1 !important;
             position: relative !important;
             flex-shrink: 0 !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
         }
+
+        /* Ocultar scrollbars que en Windows provocan recorte en el lado derecho */
+        [data-testid="stSidebar"],
+        [data-testid="stSidebarContent"],
+        [data-testid="stSidebarUserContent"],
         [data-testid="stSidebar"] .block-container {
-            padding: 1rem 0.45rem !important;
+            overflow-x: hidden !important;
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
         }
+        [data-testid="stSidebar"]::-webkit-scrollbar,
+        [data-testid="stSidebarContent"]::-webkit-scrollbar,
+        [data-testid="stSidebarUserContent"]::-webkit-scrollbar,
+        [data-testid="stSidebar"] .block-container::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+
+        [data-testid="stSidebar"] .block-container {
+            padding: 0.85rem 0.25rem !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        [data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
+            gap: 0.45rem !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            width: 100% !important;
+        }
+
+        .axiom-brand,
         .axiom-brand span,
         .sidebar-section-title,
         [class*="st-key-recent_"],
@@ -142,55 +176,106 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         [data-testid="stSidebar"] [data-testid="stPopover"] > button span {
             display: none !important;
         }
+
+        /* Contenedores de botones centrados */
+        [data-testid="stSidebar"] .stButton,
+        [data-testid="stSidebar"] [data-testid="stPopover"] {
+            width: 100% !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            margin: 0 auto !important;
+        }
+
+        /* Iconos de 48x48px centrados con espacio seguro a ambos lados */
         .st-key-sidebar_toggle_rail button,
         .st-key-sidebar_new_chat button,
         [data-testid="stSidebar"] [class*="st-key-nav_"] button,
         [data-testid="stSidebar"] [data-testid="stPopover"] > button {
+            width: 48px !important;
+            min-width: 48px !important;
+            max-width: 48px !important;
+            height: 48px !important;
+            min-height: 48px !important;
+            max-height: 48px !important;
+            padding: 0 !important;
+            margin: 0 auto !important;
+            display: flex !important;
+            align-items: center !important;
             justify-content: center !important;
-            padding: 0.55rem !important;
-            width: 100% !important;
+            border-radius: 0.5rem !important;
+            box-sizing: border-box !important;
+            text-align: center !important;
         }
-        .axiom-brand {
-            justify-content: center !important;
-            padding-left: 0 !important;
-            padding-right: 0 !important;
+
+        /* Boton toggle hamburguesa en modo compacto */
+        .st-key-sidebar_toggle_rail button {
+            background-color: var(--muted) !important;
+            border: 1px solid var(--border) !important;
+            color: var(--foreground) !important;
             margin-bottom: 0.35rem !important;
         }
-        .st-key-sidebar_toggle_rail {
-            display: flex !important;
-            justify-content: center !important;
-            margin-bottom: 0.55rem !important;
-        }
-        .st-key-sidebar_toggle_rail button {
-            min-height: 44px !important;
-            width: 44px !important;
-            margin: 0 auto !important;
-            border-radius: 0.45rem !important;
+        .st-key-sidebar_toggle_rail button:hover {
+            background-color: var(--muted-active) !important;
+            border-color: var(--border-strong) !important;
+            transform: scale(1.05) !important;
         }
         .st-key-sidebar_toggle_rail button::before {
             width: 26px !important;
             height: 26px !important;
         }
+
+        /* Boton Nueva Consulta (+) */
         .st-key-sidebar_new_chat button {
-            min-height: 48px !important;
+            background-color: var(--muted) !important;
+            border: 1px solid var(--border) !important;
+            margin-bottom: 0.35rem !important;
+        }
+        .st-key-sidebar_new_chat button:hover {
+            background-color: var(--muted-active) !important;
+            border-color: var(--border-strong) !important;
+            transform: scale(1.05) !important;
         }
         .st-key-sidebar_new_chat button::before {
             width: 26px !important;
             height: 26px !important;
         }
+
+        /* Botones de Navegación en riel */
         [data-testid="stSidebar"] [class*="st-key-nav_"] button {
-            min-height: 48px !important;
+            background-color: transparent !important;
+            border: 1px solid transparent !important;
         }
         [data-testid="stSidebar"] [class*="st-key-nav_"] button::before {
-            width: 28px !important;
-            height: 28px !important;
-        }
-        [data-testid="stSidebar"] [data-testid="stPopover"] > button {
-            min-height: 48px !important;
-        }
-        [data-testid="stSidebar"] [data-testid="stPopover"] > button::before {
             width: 26px !important;
             height: 26px !important;
+        }
+        [data-testid="stSidebar"] [class*="st-key-nav_"] button:hover {
+            transform: none !important;
+            background-color: var(--muted) !important;
+            color: var(--foreground) !important;
+        }
+        [data-testid="stSidebar"] [class*="st-key-nav_"] button[kind="primary"] {
+            background-color: var(--muted-active) !important;
+            border: 1px solid var(--border-strong) !important;
+            color: var(--foreground) !important;
+        }
+
+        /* Boton de Ajustes Popover */
+        [data-testid="stSidebar"] [data-testid="stPopover"] > button {
+            background-color: var(--muted) !important;
+            border: 1px solid var(--border) !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stPopover"] > button::before {
+            width: 24px !important;
+            height: 24px !important;
+        }
+
+        /* Separador centrado */
+        [data-testid="stSidebar"] hr {
+            width: 48px !important;
+            margin: 0.35rem auto !important;
+            border-color: var(--border) !important;
         }
         """
     else:
@@ -346,8 +431,6 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
     [data-testid="stSidebar"] [data-testid="stVerticalBlock"] {{
         gap: 0.35rem !important;
     }}
-
-    {compact_css}
 
     .axiom-brand {{
         display: flex;
@@ -714,38 +797,72 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         transform: scale(0.985) !important;
     }}
 
-    /* Mensajes alineados por rol */
+    /* Ocultar iconos / avatares de los mensajes de chat */
+    [data-testid="stChatMessage"] [data-testid*="Avatar"],
+    [data-testid="stChatMessage"] [data-testid*="avatar"],
+    [data-testid="stChatMessage"] > div:first-child:not([data-testid="stChatMessageContent"]) {{
+        display: none !important;
+    }}
+
+    /* Mensajes alineados por rol: Usuario a la derecha, Asistente a la izquierda */
     .chat-flow-container {{
         max-width: 860px;
         margin: 0 auto;
     }}
     [data-testid="stChatMessage"] {{
         border-radius: var(--radius) !important;
-        padding: 0.85rem 1.05rem !important;
+        padding: 0.85rem 1.15rem !important;
         margin-bottom: 0.75rem !important;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.14);
+        gap: 0 !important;
     }}
+    [data-testid="stChatMessage"] > div[data-testid="stChatMessageContent"] {{
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+    }}
+    /* Mensajes del Usuario (lado DERECHO) */
     [data-testid="stChatMessage"]:has(.chat-side-user) {{
         width: fit-content !important;
-        min-width: 220px !important;
+        min-width: 140px !important;
         max-width: 78% !important;
-        margin-right: auto !important;
-        margin-left: 0 !important;
-        background-color: var(--user-bubble) !important;
-        border: 1px solid var(--border) !important;
-        border-top-left-radius: 2px !important;
-        animation: chatSlideLeft 0.3s var(--ease-out-expo) both !important;
-    }}
-    [data-testid="stChatMessage"]:has(.chat-side-bot) {{
-        width: fit-content !important;
-        min-width: 260px !important;
-        max-width: 82% !important;
         margin-left: auto !important;
         margin-right: 0 !important;
+        background-color: var(--user-bubble) !important;
+        border: 1px solid var(--border) !important;
+        border-top-right-radius: 2px !important;
+        border-top-left-radius: var(--radius) !important;
+        border-bottom-right-radius: var(--radius) !important;
+        border-bottom-left-radius: var(--radius) !important;
+        animation: chatSlideRight 0.3s var(--ease-out-expo) both !important;
+    }}
+    .chat-side-user {{
+        text-align: right !important;
+    }}
+    .chat-side-user .chat-role-tag {{
+        text-align: right !important;
+    }}
+
+    /* Mensajes del Asistente (lado IZQUIERDO) */
+    [data-testid="stChatMessage"]:has(.chat-side-bot) {{
+        width: fit-content !important;
+        min-width: 220px !important;
+        max-width: 84% !important;
+        margin-left: 0 !important;
+        margin-right: auto !important;
         background-color: var(--bot-bubble) !important;
         border: 1px solid var(--border-strong) !important;
-        border-top-right-radius: 2px !important;
-        animation: chatSlideRight 0.32s var(--ease-out-expo) both !important;
+        border-top-left-radius: 2px !important;
+        border-top-right-radius: var(--radius) !important;
+        border-bottom-left-radius: var(--radius) !important;
+        border-bottom-right-radius: var(--radius) !important;
+        animation: chatSlideLeft 0.32s var(--ease-out-expo) both !important;
+    }}
+    .chat-side-bot {{
+        text-align: left !important;
+    }}
+    .chat-side-bot .chat-role-tag {{
+        text-align: left !important;
     }}
     .chat-role-tag {{
         font-family: var(--font-mono);
@@ -754,9 +871,6 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
         color: var(--muted-foreground);
         margin-bottom: 0.25rem;
         display: block;
-    }}
-    .chat-side-bot .chat-role-tag {{
-        text-align: right;
     }}
 
     /* Foco en chat input */
@@ -1023,6 +1137,8 @@ def aplicar_estilos_tema(modo_claro: bool = False, sidebar_compacto: bool = Fals
             min-height: 44px !important;
         }}
     }}
+
+    {compact_css}
     </style>
     """
     st.markdown(css, unsafe_allow_html=True)
