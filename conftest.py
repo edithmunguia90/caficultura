@@ -220,7 +220,7 @@ def generar_reporte(datos, nombre="reporte_caficultura.pdf"):
     elementos.append(Spacer(1, 20))
     elementos.append(Paragraph(
         f"<i>Generado el {datetime.now().strftime('%Y-%m-%d a las %H:%M')} "
-        f"por la Plataforma S3 - UNA Managua</i>",
+        f"por el Asistente de Caficultura</i>",
         estilos["Italic"]))
 
     # === Construir el PDF (aca se leen las imagenes) ===

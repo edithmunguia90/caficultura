@@ -289,6 +289,6 @@ def generar_reporte(datos, nombre="reporte_tecnico.pdf"):
         flow.append(Paragraph(f"- {r}", estilos["Body2"]))
     flow.append(Spacer(1, 0.6*cm))
 
-    flow.append(Paragraph(f"<i>Generado el {fecha} por la Plataforma S3 - UNA Managua</i>", estilos["Body2"]))
+    flow.append(Paragraph(f"<i>Generado el {fecha} por el Asistente de Caficultura</i>", estilos["Body2"]))
     doc.build(flow)
     return ruta

@@ -8,7 +8,7 @@ from modulos.chatbot import ChatbotCaficultura
 
 def main():
     print("=" * 62)
-    print("  ASISTENTE INTELIGENTE PARA LA CAFICULTURA - UNA")
+    print("  ASISTENTE INTELIGENTE PARA LA CAFICULTURA")
     print("  Consola interactiva. Escriba 'salir' para terminar.")
     print("=" * 62)
 
