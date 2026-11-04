@@ -1,0 +1,118 @@
+[
+  {
+    "id": "TC-001",
+    "description": "Diagnostico completo de Roya por sintomas y microclima",
+    "turns": [
+      {
+        "user": "Tengo manchas naranjas en hojas",
+        "expected_intent": "Consultar_Diagnostico_Sintoma",
+        "expected_entities": { "sintoma_observado": "manchas_naranjas" },
+        "expected_flow": "lluvia"
+      },
+      {
+        "user": "si llovio bastante anoche",
+        "expected_intent": "Consultar_Diagnostico_Sintoma",
+        "expected_entities": { "lluvia_previa": true },
+        "expected_flow": "temp"
+      },
+      {
+        "user": "estamos a 23 grados",
+        "expected_intent": "Consultar_Diagnostico_Sintoma",
+        "expected_entities": { "temperatura": 23.0 },
+        "expected_flow": "hr"
+      },
+      {
+        "user": "85% de humedad",
+        "expected_intent": "Consultar_Diagnostico_Sintoma",
+        "expected_entities": { "humedad_relativa": 85.0 },
+        "expected_final_diagnosis": "Roya"
+      }
+    ]
+  },
+  {
+    "id": "TC-002",
+    "description": "Diagnostico con autocompletado microclimatico (fallback no se)",
+    "turns": [
+      {
+        "user": "Veo polvo amarillo en mis cafetos",
+        "expected_intent": "Consultar_Diagnostico_Sintoma",
+        "expected_entities": { "sintoma_observado": "polvo_amarillo" }
+      },
+      {
+        "user": "no se",
+        "expected_intent": "Consultar_Diagnostico_Sintoma",
+        "expected_entities": { "_auto_clima": true }
+      }
+    ]
+  },
+  {
+    "id": "TC-003",
+    "description": "Optimizacion bioeconomica para finca de 2 manzanas",
+    "turns": [
+      {
+        "user": "Optimizar fertilizacion para 2 manzanas",
+        "expected_intent": "Optimizar_Plan_Fertilizacion_Riego",
+        "expected_entities": { "superficie_manzanas": 2.0 },
+        "expected_contains": ["Costo total", "Beneficio neto"]
+      }
+    ]
+  },
+  {
+    "id": "TC-004",
+    "description": "Confirmacion explicita de plan",
+    "turns": [
+      {
+        "user": "confirmo",
+        "expected_intent": "Confirmar_Accion",
+        "expected_contains": ["confirmada"]
+      }
+    ]
+  },
+  {
+    "id": "TC-005",
+    "description": "Extraccion de insumos y dosis",
+    "turns": [
+      {
+        "user": "Necesito aplicar fertilizante urea para el llenado de grano",
+        "expected_entities": {
+          "tipo_insumo": "fertilizante",
+          "fase_fenologica": "llenado_grano"
+        }
+      }
+    ]
+  },
+  {
+    "id": "TC-006",
+    "description": "Sincronizacion de clima por departamento",
+    "turns": [
+      {
+        "user": "¿Como esta el clima en Jinotega?",
+        "expected_intent": "Sincronizar_Clima_Entorno",
+        "expected_entities": { "departamento_zona": "Jinotega" }
+      }
+    ]
+  },
+  {
+    "id": "TC-007",
+    "description": "Consulta de precios internacionales y divisa",
+    "turns": [
+      {
+        "user": "¿Cual es el precio del cafe en el mercado?",
+        "expected_intent": "Consultar_Precios_Mercado",
+        "expected_contains": ["USD/qq", "NIO/USD"]
+      }
+    ]
+  },
+  {
+    "id": "TC-008",
+    "description": "Generacion de informe tecnico en PDF",
+    "turns": [
+      {
+        "user": "Generar reporte PDF",
+        "expected_intent": "Generar_Reporte_PDF",
+        "expected_contains": [".pdf"]
+      }
+    ]
+  }
+]
+
